@@ -2,3 +2,5 @@ Questions à poser à Hicham
 
 
 1) La variable Cluster : plusieurs clusters dans un état ? mais contraire à docu
+
+2) Indemnity level : comment est-ce déterminé ? A quoi sert la loss ?
