@@ -1,0 +1,4 @@
+Questions à poser à Hicham
+
+
+1) La variable Cluster : plusieurs clusters dans un état ? mais contraire à docu
