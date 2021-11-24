@@ -1,6 +1,13 @@
 Questions à poser à Hicham
 
 
-1) La variable Cluster : plusieurs clusters dans un état ? mais contraire à docu
+1) La variable Cluster : plusieurs clusters dans un état ? mais contraire à docu. Réponse : dans chaque state, ya plusieurs clusters
 
 2) Indemnity level : comment est-ce déterminé ? A quoi sert la loss ?
+
+3) 
+
+
+Remarques diverses :
+
+- une ligne dans le dataset, autrement dit une "donnéeé, ça correspond à une parcelle de culture (A VERIFIER)
