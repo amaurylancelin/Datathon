@@ -5,7 +5,7 @@ Questions à poser à Hicham
 
 2) Indemnity level : comment est-ce déterminé ? A quoi sert la loss ?
 
-3) 
+3) Pertinence des divisions administratives autres que clusters
 
 
 Remarques diverses :
