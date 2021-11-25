@@ -10,8 +10,8 @@ import seaborn as sn
 # %%
 pathData = "RawData/2017/2017_Andhra Pradesh_Kharif.xlsx"
 df=pd.read_excel(pathData)
-
-
+# %%
+df
 # %%
 #Définition de la fonction add_Loss 
 def add_Loss(df,year):
@@ -29,3 +29,21 @@ def add_Loss(df,year):
     return new_df
 
 
+
+# %%
+def clean_data(df):
+    #Suppresion des colonnes sans valeur non nulle
+    df = df.drop(columns = ["Block","2000 Yield","2001 Yield","2002 Yield","2003 Yield","2004 Yield","2005 Yield","2017 Yield","2018 Yield"])
+    #Suppression des colonnes inutiles
+    df = df.drop(columns = ["State","Sub-District","GP"])
+    #On remplace les rendements nuls par leur moyenne
+    for year in range(2006,2017):
+        df[str(year) + " Yield"] = df[str(year) + " Yield"].fillna(df[str(year) + " Yield"].mean())
+    return df
+# %%
+new_df=add_Loss(clean_data(df),2015)
+# %%
+new_df.info()
+# %%
+new_df.columns
+# %%
