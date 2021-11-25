@@ -8,10 +8,9 @@ import seaborn as sn
 
 
 # %%
-pathData = "RawData/2017/2017_Andhra Pradesh_Kharif.xlsx"
-df=pd.read_excel(pathData)
-# %%
-df
+# pathData = "RawData/2017/2017_Andhra Pradesh_Kharif.xlsx"
+# df=pd.read_excel(pathData)
+
 # %%
 #Définition de la fonction add_Loss 
 def add_Loss(df,year):
@@ -41,9 +40,9 @@ def clean_data(df):
         df[str(year) + " Yield"] = df[str(year) + " Yield"].fillna(df[str(year) + " Yield"].mean())
     return df
 # %%
-new_df=add_Loss(clean_data(df),2015)
-# %%
-new_df.info()
-# %%
-new_df.columns
-# %%
+# new_df=add_Loss(clean_data(df),2015)
+# # %%
+# new_df.info()
+# # %%
+# new_df.columns
+# # %%
