@@ -18,7 +18,7 @@ def add_Loss(df,year):
     Y=np.array([df[f'{YEAR} Yield'] for YEAR in np.arange(year-6,year+1)])
     theta=np.array(df["Indemnity Level"])
     index=np.argpartition(Y,2,axis=0)
-    Y=Y[index[2:]]
+    Y=Y[index[2:]] #a optimiser car très couteux (cf ligne d'en dessous)
     Y=Y[:,:,0]
     threshold=np.mean(Y, axis=0)*theta
     S=np.array(df["Sum Insured (Inr)"])
