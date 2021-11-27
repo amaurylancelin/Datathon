@@ -15,11 +15,9 @@ import seaborn as sn
 #Définition de la fonction add_Loss 
 def add_Loss(df,year):
     """return a new_df with a new collumn Loss"""
-    Y=np.array([df[f'{YEAR} Yield'] for YEAR in np.arange(year-6,year+1)])
+    Y=np.array([df[f'{y} Yield'] for y in np.arange(year-6,year+1)])
     theta=np.array(df["Indemnity Level"])
-    index=np.argpartition(Y,2,axis=0)
-    Y=Y[index[2:]] #a optimiser car très couteux (cf ligne d'en dessous)
-    Y=Y[:,:,0]
+    Y=np.partition(Y,2,axis=0)
     threshold=np.mean(Y, axis=0)*theta
     S=np.array(df["Sum Insured (Inr)"])
     L=np.sum(S*np.maximum(np.zeros(Y.shape),threshold-Y)/threshold,axis=0)
@@ -37,7 +35,8 @@ def clean_data(df):
     df = df.drop(columns = ["State","Sub-District","GP"])
     #On remplace les rendements nuls par leur moyenne
     for year in range(2006,2017):
-        df[str(year) + " Yield"] = df[str(year) + " Yield"].fillna(df[str(year) + " Yield"].mean())
+        col = f"{year} Yield"
+        df[col] = df[col].fillna(df[col].mean())
     return df
 # %%
 # new_df=add_Loss(clean_data(df),2015)
