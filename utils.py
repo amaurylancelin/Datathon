@@ -20,7 +20,7 @@ def add_Loss(df,year):
     Y=np.partition(Y,2,axis=0)
     threshold=np.mean(Y, axis=0)*theta
     S=np.array(df["Sum Insured (Inr)"])
-    L=np.sum(S*np.maximum(np.zeros(Y.shape),threshold-Y)/threshold,axis=0)
+    L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
     new_df=df
     new_df["Loss"]=L
     return new_df
