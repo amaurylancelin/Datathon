@@ -12,7 +12,17 @@ import seaborn as sn
 # df=pd.read_excel(pathData)
 
 # %%
-#Définition de la fonction add_Loss 
+def unify_data(YEAR = 2019, SEASON = 'Kharif') :
+    liste_dataframe = []
+    monRepertoire = "RawData/"+str(YEAR)
+    for f in tqdm(listdir(monRepertoire)) :
+        if isfile(join(monRepertoire, f)) and (f[-11:-5] == SEASON or f[-9:-5] == SEASON):
+            pathData = "RawData/"+str(YEAR)+"/"+f
+            liste_dataframe.append(pd.read_excel(pathData))
+    df = pd.concat(liste_dataframe)
+    df.to_csv(f'RawDataUnified/RawData_{YEAR}_{SEASON}')
+
+# %%
 def add_Loss(df,year=2017):
     """return a new_df with a new collumn Loss for the data of 2019"""
     Y=np.array([df[f'{y} Yield'] for y in np.arange(year-6,year+1)])
@@ -53,7 +63,11 @@ def clean_data(df):
         df[col] = df[col].fillna(df[col].mean())
     return df
 
+
+
 # %%
+# BROUILLON 
+
 def clean_data_brouillon(df):
     #Suppresion des colonnes sans valeur non nulle
     df = df.drop(columns = ["2000 Yield","2001 Yield","2002 Yield","2003 Yield","2004 Yield","2005 Yield","2018 Yield"])
