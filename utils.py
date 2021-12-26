@@ -13,13 +13,12 @@ import seaborn as sn
 
 # %%
 #Définition de la fonction add_Loss 
-def add_Loss(df,year):
-    """return a new_df with a new collumn Loss"""
+def add_Loss(df,year=2017):
+    """return a new_df with a new collumn Loss for the data of 2019"""
     Y=np.array([df[f'{y} Yield'] for y in np.arange(year-6,year+1)])
     theta=np.array(df["Indemnity Level"])
     Y=np.partition(Y,2,axis=0)
     Y=Y[2:,:]
-    print(Y.shape)
     threshold=np.mean(Y, axis=0)*theta
     S=np.array(df["Sum Insured (Inr)"])
     L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
@@ -27,14 +26,39 @@ def add_Loss(df,year):
     new_df["Loss"]=L
     return new_df
 
-
+# %% 
+def clean_data(df):
+    """Clean les data pour l'année 2019"""
+    #Suppression de la première colonne inutile (numérotation)
+    df = df.drop(columns = ["Unnamed: 0"])
+    #Suppression des colonnes sans valeur non nulle
+    df = df.drop(columns = ["2018 Yield"])
+    df = df.drop(columns = ["2000 Yield"])
+    df = df.drop(columns = ["2001 Yield"])
+    #Suppression des colonnes inutiles
+    df = df.drop(columns = ["Season"])
+    df = df.drop(columns = ["Cluster"])
+    #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
+    df["Block"] = df["Block"].fillna("_")
+    df["GP"] = df["GP"].fillna("_")
+    df["Sub-District"] = df["Sub-District"].fillna("_")
+    df["key"] = df["State"]+"_"+df["District"]+"_"+df["Sub-District"]+"_"+df["Block"]+"_"+df["GP"]
+    df.key = df.key.astype(str).str.lower()
+    df = df.drop(columns = ["State","District","Sub-District","Block","GP"])
+    #On remplace les rendements nuls par leur moyenne
+    for year in range(2002,2018):
+        col = f"{year} Yield"
+        df[col] = df[col].fillna(df[col].mean()) #A FAIRE vérifier que c'est pas abérant de faire ça pour l'anéee 2017. (df["2017 Yield"].isna().sum()) réponse : c'est bcp mais bon...
+    for col in ["Area Sown (Ha)","Area Insured (Ha)","SI Per Ha (Inr/Ha)","Sum Insured (Inr)","Indemnity Level"]:
+        df[col] = df[col].fillna(df[col].mean())
+    return df
 
 # %%
-def clean_data(df):
+def clean_data_brouillon(df):
     #Suppresion des colonnes sans valeur non nulle
-    df = df.drop(columns = ["Block","2000 Yield","2001 Yield","2002 Yield","2003 Yield","2004 Yield","2005 Yield","2017 Yield","2018 Yield"])
+    df = df.drop(columns = ["2000 Yield","2001 Yield","2002 Yield","2003 Yield","2004 Yield","2005 Yield","2018 Yield"])
     #Suppression des colonnes inutiles
-    df = df.drop(columns = ["State","Sub-District","GP"])
+    df = df.drop(columns = ["State","Sub-District","Block","GP"])
     #On remplace les rendements nuls par leur moyenne
     for year in range(2006,2017):
         col = f"{year} Yield"
