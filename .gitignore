@@ -1,7 +1,8 @@
 .DS_Store
 /RawData
 pipeline_Descartes.ipynb
-
+/Test unification Datasets initiaux
+/03_Prediction
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
