@@ -2,9 +2,8 @@
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
-import seaborn as sn 
+from sklearn.preprocessing import LabelEncoder
 
 
 # %%
@@ -49,9 +48,9 @@ def clean_data(df):
     df = df.drop(columns = ["Season"])
     df = df.drop(columns = ["Cluster"])
     #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
-    df["Block"] = df["Block"].fillna("_")
+    df["Block"] = df["Block"].fillna("")
     df["GP"] = df["GP"].fillna("_")
-    df["Sub-District"] = df["Sub-District"].fillna("_")
+    df["Sub-District"] = df["Sub-District"].fillna("")
     df["key"] = df["State"]+"_"+df["District"]+"_"+df["Sub-District"]+"_"+df["Block"]+"_"+df["GP"]
     df.key = df.key.astype(str).str.lower()
     df = df.drop(columns = ["State","District","Sub-District","Block","GP"])
@@ -61,9 +60,39 @@ def clean_data(df):
         df[col] = df[col].fillna(df[col].mean()) #A FAIRE vérifier que c'est pas abérant de faire ça pour l'anéee 2017. (df["2017 Yield"].isna().sum()) réponse : c'est bcp mais bon...
     for col in ["Area Sown (Ha)","Area Insured (Ha)","SI Per Ha (Inr/Ha)","Sum Insured (Inr)","Indemnity Level"]:
         df[col] = df[col].fillna(df[col].mean())
+    df = df.set_index("key")
     return df
 
+# %%
 
+def clean_data_state(df):
+    """Nettoie les données pour l'année 2019 en conservant l'appartenance à un Etat"""
+    #Suppression de la première colonne inutile (numérotation)
+    df = df.drop(columns = ["Unnamed: 0"])
+    #Suppression des colonnes sans valeur non nulle
+    df = df.drop(columns = ["2018 Yield"])
+    df = df.drop(columns = ["2000 Yield"])
+    df = df.drop(columns = ["2001 Yield"])
+    #Suppression des colonnes inutiles
+    df = df.drop(columns = ["Season"])
+    df = df.drop(columns = ["Cluster"])
+    #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
+    df["Block"] = df["Block"].fillna("")
+    df["GP"] = df["GP"].fillna("_")
+    df["Sub-District"] = df["Sub-District"].fillna("")
+    df["key"] = df["State"]+"_"+df["District"]+"_"+df["Sub-District"]+"_"+df["Block"]+"_"+df["GP"]
+    df.key = df.key.astype(str).str.lower()
+    df = df.drop(columns = ["District","Sub-District","Block","GP"])
+    le = LabelEncoder()
+    df["State"] = le.fit_transform(df["State"])
+    #On remplace les rendements nuls par leur moyenne
+    for year in range(2002,2018):
+        col = f"{year} Yield"
+        df[col] = df[col].fillna(df[col].mean()) #A FAIRE vérifier que c'est pas abérant de faire ça pour l'anéee 2017. (df["2017 Yield"].isna().sum()) réponse : c'est bcp mais bon...
+    for col in ["Area Sown (Ha)","Area Insured (Ha)","SI Per Ha (Inr/Ha)","Sum Insured (Inr)","Indemnity Level"]:
+        df[col] = df[col].fillna(df[col].mean())
+    df = df.set_index("key")
+    return df
 
 # %%
 # BROUILLON 
