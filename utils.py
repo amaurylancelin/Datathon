@@ -36,6 +36,7 @@ def add_Loss(df,year=2017):
     return new_df
 
 # %% 
+# Pour le clustering des parcelles
 def clean_data(df):
     """Clean les data pour l'année 2019"""
     #Suppression de la première colonne inutile (numérotation)
@@ -47,14 +48,18 @@ def clean_data(df):
     #Suppression des colonnes inutiles
     df = df.drop(columns = ["Season"])
     df = df.drop(columns = ["Cluster"])
-    #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
+    #consitution de key
     df["Block"] = df["Block"].fillna("")
     df["GP"] = df["GP"].fillna("_")
     df["Sub-District"] = df["Sub-District"].fillna("")
     df["key"] = df["State"]+"_"+df["District"]+"_"+df["Sub-District"]+"_"+df["Block"]+"_"+df["GP"]
     df.key = df.key.astype(str).str.lower()
+    #fill na with mean of states
+    for state in pd.unique(df["State"]):
+        df[df["State"]==state] = df[df["State"]==state].fillna(df[df["State"]==state].mean(numeric_only=True))  
+    #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
     df = df.drop(columns = ["State","District","Sub-District","Block","GP"])
-    #On remplace les rendements nuls par leur moyenne
+    #On remplace les rendements NA restants par leur moyenne
     for year in range(2002,2018):
         col = f"{year} Yield"
         df[col] = df[col].fillna(df[col].mean()) #A FAIRE vérifier que c'est pas abérant de faire ça pour l'anéee 2017. (df["2017 Yield"].isna().sum()) réponse : c'est bcp mais bon...
@@ -64,7 +69,7 @@ def clean_data(df):
     return df
 
 # %%
-
+# Pour le clustering des etats
 def clean_data_state(df):
     """Nettoie les données pour l'année 2019 en conservant l'appartenance à un Etat"""
     #Suppression de la première colonne inutile (numérotation)
@@ -76,16 +81,21 @@ def clean_data_state(df):
     #Suppression des colonnes inutiles
     df = df.drop(columns = ["Season"])
     df = df.drop(columns = ["Cluster"])
-    #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
+    #consitution de key
     df["Block"] = df["Block"].fillna("")
     df["GP"] = df["GP"].fillna("_")
     df["Sub-District"] = df["Sub-District"].fillna("")
     df["key"] = df["State"]+"_"+df["District"]+"_"+df["Sub-District"]+"_"+df["Block"]+"_"+df["GP"]
     df.key = df.key.astype(str).str.lower()
+    #fill na with mean of states
+    for state in pd.unique(df["State"]):
+        df[df["State"]==state] = df[df["State"]==state].fillna(df[df["State"]==state].mean(numeric_only=True))  
+    #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
     df = df.drop(columns = ["District","Sub-District","Block","GP"])
+    
     le = LabelEncoder()
     df["State"] = le.fit_transform(df["State"])
-    #On remplace les rendements nuls par leur moyenne
+    #On remplace les rendements NA restants par leur moyenne
     for year in range(2002,2018):
         col = f"{year} Yield"
         df[col] = df[col].fillna(df[col].mean()) #A FAIRE vérifier que c'est pas abérant de faire ça pour l'anéee 2017. (df["2017 Yield"].isna().sum()) réponse : c'est bcp mais bon...
