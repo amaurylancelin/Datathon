@@ -139,9 +139,10 @@ def get_liste_district_cluster(list_admLvl, df_admLvl_cluster, admLvl):
     return liste_admLvl_cluster
 
 
-#plot clusters on map of India
-
-def plot_on_map(method_labels,pathData,admLvl):      # typiquement admLvl = 'District'
+# plot clusters on map of India
+# typiquement admLvl = 'District', method_labels = kmeans.labels_ par exemple
+# pathData renvoie vers les données brutes initiales
+def plot_on_map(method_labels,pathData,admLvl):      
     labels_df = pd.DataFrame(method_labels, columns=['labels'])
     df_init = pd.read_csv(pathData)
     df_init['cluster'] = labels_df['labels'] 
