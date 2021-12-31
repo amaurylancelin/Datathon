@@ -2,7 +2,7 @@
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
 import pandas as pd
-import geopandas as gpd
+# import geopandas as gpd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
