@@ -2,7 +2,7 @@
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
 import pandas as pd
-# import geopandas as gpd
+import geopandas as gpd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
@@ -172,3 +172,44 @@ def plot_on_map(method_labels,pathData,admLvl):
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
     fig = merged.plot(column='Clusters', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
 # %%
+
+
+def get_liste_admLvl_crop(list_admLvl, df_admLvl_crop, admLvl):
+    liste_admLvl_crop = []
+    for i in range(len(list_admLvl)):
+        l = []
+        l.append(list_admLvl[i])
+        #print(df_admLvl_crop[df_admLvl_crop[admLvl] == list_admLvl[i]]["Crop"].to_numpy())
+        if len(df_admLvl_crop[df_admLvl_crop[admLvl] == list_admLvl[i]]["Crop"].to_numpy().astype(int)) > 0 :
+            l.append(np.bincount(df_admLvl_crop[df_admLvl_crop[admLvl] == list_admLvl[i]]["Crop"].to_numpy().astype(int)).argmax())
+        liste_admLvl_crop.append(l)
+    return liste_admLvl_crop
+
+def plot_crops(pathData,admLvl):      
+    df_init = pd.read_csv(pathData)
+    df_admLvl_crop = df_init[[admLvl, 'Crop']]
+    df_admLvl_crop['Crop'] = pd.factorize(df_admLvl_crop['Crop'])[0]
+    # print(df_admLvl_crop)
+    list_admLvl = pd.unique(df_admLvl_crop[admLvl])
+
+    list_admLvl_crop = get_liste_admLvl_crop(list_admLvl, df_admLvl_crop, admLvl)
+    df_reduced = pd.DataFrame(list_admLvl_crop, columns=[admLvl, 'Crop'])
+
+    if admLvl == 'State' :
+        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        name = 'NAME_1'
+    elif admLvl == 'District' :
+        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        name = 'NAME_2'
+    else :
+        map_path = "maps/ind_adm_shp/IND_adm3.shp"
+        name = 'NAME_3'
+
+    map_gdf = gpd.read_file(map_path)
+    merged = map_gdf.set_index(name).join(df_reduced.set_index(admLvl))
+
+    fig, ax = plt.subplots(1, figsize=(12, 12))
+    ax.axis('off')
+    ax.set_title('Main crop in each '+ admLvl,
+                fontdict={'fontsize': '15', 'fontweight' : '3'})
+    fig = merged.plot(column='Crop', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
