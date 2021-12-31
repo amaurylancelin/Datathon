@@ -127,17 +127,17 @@ def clean_data_brouillon(df):
 # new_df.columns
 # # %%
 
-def get_liste_district_cluster(list_admLvl, df_admLvl_cluster, admLvl):
+
+def get_liste_admLvl_cluster(list_admLvl, df_admLvl_cluster, admLvl):
     liste_admLvl_cluster = []
     for i in range(len(list_admLvl)):
         l = []
         l.append(list_admLvl[i])
-        print(df_admLvl_cluster[df_admLvl_cluster[admLvl] == list_admLvl[i]]["cluster"].to_numpy())
+        #print(df_admLvl_cluster[df_admLvl_cluster[admLvl] == list_admLvl[i]]["cluster"].to_numpy())
         if len(df_admLvl_cluster[df_admLvl_cluster[admLvl] == list_admLvl[i]]["cluster"].to_numpy().astype(int)) > 0 :
             l.append(np.bincount(df_admLvl_cluster[df_admLvl_cluster[admLvl] == list_admLvl[i]]["cluster"].to_numpy().astype(int)).argmax())
         liste_admLvl_cluster.append(l)
     return liste_admLvl_cluster
-
 
 # plot clusters on map of India
 # typiquement admLvl = 'District', method_labels = kmeans.labels_ par exemple
@@ -146,12 +146,12 @@ def plot_on_map(method_labels,pathData,admLvl):
     labels_df = pd.DataFrame(method_labels, columns=['labels'])
     df_init = pd.read_csv(pathData)
     df_init['cluster'] = labels_df['labels'] 
-    df_admLvl_cluster = df_init[['District', 'cluster']]
+    df_admLvl_cluster = df_init[[admLvl, 'cluster']]
 
     list_admLvl = pd.unique(df_admLvl_cluster[admLvl])
 
-    list_district_cluster = get_liste_district_cluster(list_admLvl, df_admLvl_cluster, admLvl)
-    df_reduced = pd.DataFrame(list_district_cluster, columns=[admLvl, 'Clusters'])
+    list_admLvl_cluster = get_liste_admLvl_cluster(list_admLvl, df_admLvl_cluster, admLvl)
+    df_reduced = pd.DataFrame(list_admLvl_cluster, columns=[admLvl, 'Clusters'])
 
     if admLvl == 'State' :
         map_path = "maps/ind_adm_shp/IND_adm2.shp"
@@ -168,6 +168,7 @@ def plot_on_map(method_labels,pathData,admLvl):
 
     fig, ax = plt.subplots(1, figsize=(12, 12))
     ax.axis('off')
-    ax.set_title('Clustering with k-means, averaged on each district',
+    ax.set_title('Clustering with k-means, averaged on each '+ admLvl,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
     fig = merged.plot(column='Clusters', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
+# %%
