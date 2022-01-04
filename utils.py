@@ -1,12 +1,15 @@
 # To add a new cell, type '# %%'
 # To add a new markdown cell, type '# %% [markdown]'
 # %%
+import os
 import pandas as pd
 import geopandas as gpd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 
+from os import isfile, listdir, join
+from tqdm import tqdm
 
 # %%
 # pathData = "RawData/2017/2017_Andhra Pradesh_Kharif.xlsx"
