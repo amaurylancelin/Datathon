@@ -5,6 +5,7 @@ pipeline_Descartes.ipynb
 /03_Prediction
 Outputs/data_preprocessedKmeans_Rabi
 Outputs/data_preprocessedKmeans_Kharif
+maps_unused
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
