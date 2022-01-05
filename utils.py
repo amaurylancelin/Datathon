@@ -196,7 +196,7 @@ def plot_crops(pathData,admLvl):
     df_reduced = pd.DataFrame(list_admLvl_crop, columns=[admLvl, 'Crop'])
 
     if admLvl == 'State' :
-        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
     elif admLvl == 'District' :
         map_path = "maps/ind_adm_shp/IND_adm2.shp"
