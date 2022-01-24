@@ -27,14 +27,42 @@ def unify_data(YEAR = 2019, SEASON = 'Kharif') :
     df.to_csv(f'RawDataUnified/RawData_{YEAR}_{SEASON}')
 
 # %%
-def add_Loss(df,year=2017):
+def add_Loss(df,year=2019):
+    """return a new_df with new collumns for Loss and delete the useless collumns after the computation. Only work for the data of 2019"""
+    #define several quantities used in the next formulas
+    Yi=np.array([df[f'{y} Yield'] for y in np.arange(year-2-6,year-2+1)])
+    theta=np.array(df["Indemnity Level"])
+    Y=np.partition(Yi,2,axis=0)
+    Y=Y[2:,:]
+    threshold=np.mean(Y, axis=0)*theta
+    S=np.array(df["Sum Insured (Inr)"])
+
+    #define and add the vector of production loss (used for the db criteria in particular)
+    vect=np.maximum(0,threshold-Yi)/threshold
+    new_df=df
+    for i in range(7) :
+        new_df[f'Lp_{2011+i}'] = vect[i,:]
+
+    #define and add the cumulative monetary loss
+    L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
+    new_df["Loss"]=L
+
+    #delete the useless collumns 
+    collumns_useless = [f'{y} Yield' for y in np.arange(year-17,year-2+1)]
+    collumns_useless.extend(['Sum Insured (Inr)', 'Indemnity Level'])
+    new_df = new_df.drop(columns = collumns_useless)
+    return new_df
+
+
+def add_Loss_brouillon(df,year=2019):
     """return a new_df with a new collumn Loss for the data of 2019"""
-    Y=np.array([df[f'{y} Yield'] for y in np.arange(year-6,year+1)])
+    Y=np.array([df[f'{y} Yield'] for y in np.arange(year-2-6,year-2+1)])
     theta=np.array(df["Indemnity Level"])
     Y=np.partition(Y,2,axis=0)
     Y=Y[2:,:]
     threshold=np.mean(Y, axis=0)*theta
     S=np.array(df["Sum Insured (Inr)"])
+
     L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
     new_df=df
     new_df["Loss"]=L
@@ -278,3 +306,8 @@ def plot_yields(pathData,admLvl,K):
     ax.set_title('Average yield in each '+ admLvl,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
     fig = merged.plot(column='Yield', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
+
+
+
+    def processing_data(data) :
+        dataclean = add_Loss(clean_data(data),year=2017)
