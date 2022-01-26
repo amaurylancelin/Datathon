@@ -17,15 +17,15 @@ INDEX = [
 INDEX.extend([f"{year} Yield" for year in range(2000,2019)])
 
 
-def main_clean(df, transformation=None):
+def main_clean(df, transformation=None, return_stats=False):
     """
     This function cleans the dataframe and returns a cleaned dataframe.
     """
 
     df_new = df.copy()
-    stats = compute_mean_by_crop(df_new)
     df_new = precleaning_area_sown(df_new)
     df_new = precleaning_yield(df_new)
+    stats = compute_mean_by_crop(df_new)
     df_new = fill_NaN(df_new, stats)
 
     if transformation=="normalization":
@@ -38,6 +38,9 @@ def main_clean(df, transformation=None):
 
     elif isinstance(transformation, collections.abc.Callable):
         df_new = transformation(df_new)
+
+    if return_stats:
+        return df_new, stats
 
     return df_new
 
@@ -132,6 +135,12 @@ def precleaning_area_sown(df):
     It may contains non numeric values.
     """
     newValues = []
+    try:
+        df["Area Sown (Ha)"]
+
+    except KeyError:
+        return df
+
     for value in df["Area Sown (Ha)"]:
         try:
             value = float(value)
