@@ -3,8 +3,9 @@
 pipeline_Descartes.ipynb
 /Code Brouillon/Test unification Datasets initiaux
 /03_Prediction
-Outputs/data_preprocessedKmeans_Rabi
-Outputs/data_preprocessedKmeans_Kharif
+/Maps
+Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Rabi
+Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Kharif
 maps_unused
 
 # Byte-compiled / optimized / DLL files
