@@ -5,11 +5,7 @@ pipeline_Descartes.ipynb
 /03_Prediction
 Outputs/data_preprocessedKmeans_Rabi
 Outputs/data_preprocessedKmeans_Kharif
-<<<<<<< HEAD
 Data/RawData/stats/*.json
-=======
-maps_unused
->>>>>>> 111a29d8fbaa5f8127e52619390ba19c9117b218
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
