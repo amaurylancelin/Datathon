@@ -1,3 +1,4 @@
+from cv2 import normalize
 import numpy as np
 from sklearn.metrics import hamming_loss
 
@@ -108,4 +109,24 @@ def get_closest_keys_scoring(key, df, score_fn=score_fn):
         # Return the closest keys in the state regarding score_fn
         best = df_bis.sort_values(by=["score"], ascending=False).iloc[0]["score"]
         return df_bis[df_bis["score"]==best].drop(["score"], axis=1)
+
+
+def get_cluster(df_query, rule="max"):
+
+    """
+    Return the cluster of a given key using the query dataframe based on a specific rule.
+    """
+    clusters_values = df_query["Cluster"].value_counts(ascending=False, normalize=True)
+
+    if rule == "max":
+        # We return the cluster with the highest number of values
+        return clusters_values.index[0]
+
+    elif rule == "draw":
+        return np.random.choice(clusters_values.index, 1, p=clusters_values.values)
+
+    else:
+        assert False, "Unknown rule"
+
+
 
