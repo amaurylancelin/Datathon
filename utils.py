@@ -27,14 +27,42 @@ def unify_data(YEAR = 2019, SEASON = 'Kharif') :
     df.to_csv(f'RawDataUnified/RawData_{YEAR}_{SEASON}')
 
 # %%
-def add_Loss(df,year=2017):
+def add_Loss(df,year=2019):
+    """return a new_df with new collumns for Loss and delete the useless collumns after the computation. Only work for the data of 2019"""
+    #define several quantities used in the next formulas
+    Yi=np.array([df[f'{y} Yield'] for y in np.arange(year-2-6,year-2+1)])
+    theta=np.array(df["Indemnity Level"])
+    Y=np.partition(Yi,2,axis=0)
+    Y=Y[2:,:]
+    threshold=np.mean(Y, axis=0)*theta
+    S=np.array(df["Sum Insured (Inr)"])
+
+    #define and add the vector of production loss (used for the db criteria in particular)
+    vect=np.maximum(0,threshold-Yi)/threshold
+    new_df=df
+    for i in range(7) :
+        new_df[f'Lp_{2011+i}'] = vect[i,:]
+
+    #define and add the cumulative monetary loss
+    L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
+    new_df["Loss"]=L
+
+    #delete the useless collumns 
+    collumns_useless = [f'{y} Yield' for y in np.arange(year-17,year-2+1)]
+    collumns_useless.extend(['Sum Insured (Inr)', 'Indemnity Level'])
+    new_df = new_df.drop(columns = collumns_useless)
+    return new_df
+
+
+def add_Loss_brouillon(df,year=2019):
     """return a new_df with a new collumn Loss for the data of 2019"""
-    Y=np.array([df[f'{y} Yield'] for y in np.arange(year-6,year+1)])
+    Y=np.array([df[f'{y} Yield'] for y in np.arange(year-2-6,year-2+1)])
     theta=np.array(df["Indemnity Level"])
     Y=np.partition(Y,2,axis=0)
     Y=Y[2:,:]
     threshold=np.mean(Y, axis=0)*theta
     S=np.array(df["Sum Insured (Inr)"])
+
     L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
     new_df=df
     new_df["Loss"]=L
@@ -199,7 +227,7 @@ def plot_crops(pathData,admLvl):
     df_reduced = pd.DataFrame(list_admLvl_crop, columns=[admLvl, 'Crop'])
 
     if admLvl == 'State' :
-        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
     elif admLvl == 'District' :
         map_path = "maps/ind_adm_shp/IND_adm2.shp"
@@ -216,3 +244,70 @@ def plot_crops(pathData,admLvl):
     ax.set_title('Main crop in each '+ admLvl,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
     fig = merged.plot(column='Crop', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
+
+#%%
+
+# il faut modifier un peu clean data pour que ce plot fonctionne
+def get_liste_admLvl_yield(list_admLvl, df_admLvl_yield, admLvl, K):
+    liste_admLvl_yield = []
+    yields = []
+    for i in range(len(list_admLvl)):
+        l = []
+        l.append(list_admLvl[i])
+        #print(df_admLvl_yield[df_admLvl_yield[admLvl] == list_admLvl[i]]["2017 Yield"].to_numpy())
+        if len(df_admLvl_yield[df_admLvl_yield[admLvl] == list_admLvl[i]]["2017 Yield"].to_numpy().astype(int)) > 0 :
+            mean_yield = np.mean(df_admLvl_yield[df_admLvl_yield[admLvl] == list_admLvl[i]]["2017 Yield"].to_numpy().astype(float))
+            yields.append(mean_yield)
+            l.append(mean_yield)
+        liste_admLvl_yield.append(l)
+    yields_arr = np.array(yields)
+    m = np.min(yields_arr)
+    M = np.max(yields_arr)
+    step = (M-m)/K
+    for i in range(len(list_admLvl)):
+        val = liste_admLvl_yield[i][1]
+        value = m
+        for j in range(K):
+            if val >= (m + j*step) and val < (m + (j+1)*step) :
+                value = m + (j+1/2)*step
+        liste_admLvl_yield[i][1] = value
+    return liste_admLvl_yield
+
+def plot_yields(pathData,admLvl,K):      
+    df_init = pd.read_csv(pathData)
+    df_clean = add_Loss(clean_data(df_init))
+    df_admLvl_yield = df_clean[[admLvl,'2017 Yield']]
+
+    #m = df_admLvl_yield['2017 Yield'].min()
+    #M = df_admLvl_yield['2017 Yield'].max()
+
+    # print(df_admLvl_yield)
+    list_admLvl = pd.unique(df_admLvl_yield[admLvl])
+
+    list_admLvl_yield = get_liste_admLvl_yield(list_admLvl, df_admLvl_yield, admLvl, K)
+    df_reduced = pd.DataFrame(list_admLvl_yield, columns=[admLvl, 'Yield'])
+    print(df_reduced)
+
+    if admLvl == 'State' :
+        map_path = "maps/gadm36_IND_shp/gadm36_IND_1.shp"
+        name = 'NAME_1'
+    elif admLvl == 'District' :
+        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        name = 'NAME_2'
+    else :
+        map_path = "maps/ind_adm_shp/IND_adm3.shp"
+        name = 'NAME_3'
+
+    map_gdf = gpd.read_file(map_path)
+    merged = map_gdf.set_index(name).join(df_reduced.set_index(admLvl))
+
+    fig, ax = plt.subplots(1, figsize=(12, 12))
+    ax.axis('off')
+    ax.set_title('Average yield in each '+ admLvl,
+                fontdict={'fontsize': '15', 'fontweight' : '3'})
+    fig = merged.plot(column='Yield', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
+
+
+
+    def processing_data(data) :
+        dataclean = add_Loss(clean_data(data),year=2017)
