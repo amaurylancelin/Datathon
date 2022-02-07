@@ -1,0 +1,64 @@
+Questions à poser à Hicham
+
+
+1) La variable Cluster : plusieurs clusters dans un état ? mais contraire à docu. Réponse : dans chaque state, ya plusieurs clusters
+
+2) Indemnity level : comment est-ce déterminé ? A quoi sert la loss ?
+
+3) Pertinence des divisions administratives autres que clusters
+
+4)Nous réexpliquer les objcetifs bien précisémment 
+
+
+Remarques diverses :
+
+- une ligne dans le dataset, autrement dit une "donnéeé, ça correspond à une parcelle de culture (A VERIFIER)
+
+
+
+#Définition de la fonction add_Loss 
+def add_Loss(df,year):
+    """return a new_df with a new collumn Loss"""
+    Y=np.array([df[f'{YEAR} Yield'] for YEAR in np.arange(year-6,year+1)])
+    theta=np.array(df["Indemnity Level"])
+    index=np.argpartition(Y,2,axis=0)
+    Y=Y[index[2:]]
+    Y=Y[:,:,0]
+    threshold=np.mean(Y, axis=0)*theta
+    S=np.array(df["Sum Insured (Inr)"])
+    L=np.sum(S*np.maximum(np.zeros(Y.shape),threshold-Y)/threshold,axis=0)
+    new_df=df
+    new_df["Loss"]=L
+    return new_df
+
+from sklearn.preprocessing import MinMaxScaler
+scaler = MinMaxScaler()
+data = df.copy(deep=True)
+data[["Area Sown (Ha)","Area Insured (Ha)","SI Per Ha (Inr/Ha)","Sum Insured (Inr)","Indemnity Level",]] = scaler.fit_transform(data[["Area Sown (Ha)","Area Insured (Ha)","SI Per Ha (Inr/Ha)","Sum Insured (Inr)","Indemnity Level",]])
+list_label_yield = []
+for year in range(2006,2017):
+    list_label_yield.append(str(year) + " Yield")
+    data[[str(year) + " Yield"]] = scaler.fit_transform(data[[str(year) + " Yield"]])
+data = pd.get_dummies(data)
+for col in data.columns:
+    if(col in ["Area Sown (Ha)","Area Insured (Ha)","SI Per Ha (Inr/Ha)","Sum Insured (Inr)","Indemnity Level",]):
+        continue
+    if col in list_label_yield:
+        continue
+    proba = data[col].sum()/data[col].size
+    data[col] = data[col]/np.sqrt(proba)
+    data[col] = data[col] - data[col].mean()
+from sklearn.decomposition import PCA
+pca = PCA(n_components=2)
+pca_result = pca.fit_transform(data)
+data['pca-one'] = pca_result[:,0]
+data['pca-two'] = pca_result[:,1] 
+plt.figure(figsize=(16,10))
+sn.scatterplot(
+    x="pca-one", y="pca-two",
+    data=data,
+    palette=sn.color_palette(palette="bright",n_colors=20),
+    legend="full",
+    alpha=0.3
+)
+plt.show()
