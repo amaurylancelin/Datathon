@@ -3,7 +3,7 @@
 # %%
 import os
 import pandas as pd
-import geopandas as gpd
+#import geopandas as gpd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
@@ -161,3 +161,22 @@ def clean_data_brouillon(df):
 
 def processing_data(data) :
     dataclean = add_Loss(clean_data(data),year=2019)
+
+#%%
+def regroupe_crop(df):
+    """Regroupe les crops du datasets df"""
+    crop_to_merge = {}
+    crops = pd.unique(df["Crop"])
+    for crop in crops:
+        if crop[:-4] in crops:
+            crop_to_merge[crop] = crop[:-4]
+        elif crop[:-7] in crops:
+            crop_to_merge[crop] = crop[:-7] 
+        else:
+            crop_to_merge[crop] = crop
+    crop_to_merge['Ragi IRR'] = "Ragi Un-IRR"
+    crop_to_merge['ONION IRR'] = 'Onion'
+    df['Crop'] = df["Crop"].map(crop_to_merge)
+    return df
+
+# %%
