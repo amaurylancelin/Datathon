@@ -4,45 +4,32 @@ import os
 import sys
 from tqdm import trange, tqdm
 
-<<<<<<< HEAD
 # Define the root of our project
 root = "/users/eleves-b/2019/maxime.bonnin/Datathon/"
 os.chdir(root)
-=======
 STATES_NOT_INCLUDED = {"Rabi": ['Assam', 'Uttarakhand', 'Jharkhand'], "Kharif":['Assam', 'Tamil nadu']}
 
 # Define the root of our project
-root = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/"
+# root = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/"
 
-# root = "/users/eleves-b/2019/maxime.bonnin/Datathon/"
+root = "/users/eleves-b/2019/maxime.bonnin/Datathon/"
 
 # adding roots to the system path
 sys.path.insert(0, root)
 
-season = "Rabi"
+season = "Kharif"
 STATES_NOT_INCLUDED = STATES_NOT_INCLUDED[season]
-
-from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster
->>>>>>> 16d1cf6a7c942fa1b85b13dc955a33b1aa1ca878
 
 from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster
 
 season = "Rabi"
 # Def the path of the clusters file
-<<<<<<< HEAD
-pathPreds = root + f"kmeans_labels_{season}_14-02"
-=======
-pathPreds = root + f"Outputs/Predictions/kmeans_labels_{season}"
->>>>>>> 16d1cf6a7c942fa1b85b13dc955a33b1aa1ca878
+pathPreds = root + f"Outputs/Predictions/kmeans_labels_{season}_14-02"
 
 # Define the predictions needed
 pathSubmission = root + f"Data/03_Prediction/GP_Pred_{season}.csv"
 
-<<<<<<< HEAD
 pathSubFinal = root + f"Data/03_Prediction/GP_Pred_{season}_final.csv"
-=======
-pathSubFinal = root + f"GP_Pred_{season}_final.csv"
->>>>>>> 16d1cf6a7c942fa1b85b13dc955a33b1aa1ca878
 
 df_preds = pd.read_csv(pathPreds)
 df_preds["State"] = df_preds["key"].apply(lambda x: x.split("_")[0])

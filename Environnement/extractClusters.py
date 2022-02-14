@@ -1,4 +1,3 @@
-from cv2 import normalize
 import numpy as np
 from sklearn.metrics import hamming_loss
 
@@ -58,7 +57,8 @@ def get_closest_keys_scoring(key, df, score_fn=score_fn):
     # We use these dataframes because they reduce the computation time
     # by reducing the number of comparisons
     cols = ["State", "District", "SubDistrict", "Block", "GP"]
-    state, district, subDistrict, block, GP = key.split("_") 
+    # print(key.split("_"))
+    state, district, subDistrict, block, GP = key.split("_")[:min(5, len(key.split("_")))] 
     df_State = df[df["State"] == state].copy()
     df_District = df_State[df_State["District"] == district].copy()
     df_SubDistrict = df_District[df_District["SubDistrict"] == subDistrict].copy()
