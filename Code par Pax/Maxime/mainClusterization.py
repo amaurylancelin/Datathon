@@ -3,19 +3,20 @@ import numpy as np
 import os
 from tqdm import tqdm
 
-from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster
-
 # Define the root of our project
-root = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/"
+root = "/users/eleves-b/2019/maxime.bonnin/Datathon/"
 os.chdir(root)
 
+from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster
+
+season = "Rabi"
 # Def the path of the clusters file
-pathPreds = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/Outputs/Predictions/kmeans_labels_Kharif"
+pathPreds = root + f"kmeans_labels_{season}_14-02"
 
 # Define the predictions needed
-pathSubmission = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/Data/03_Prediction/GP_Pred_Kharif.csv"
+pathSubmission = root + f"Data/03_Prediction/GP_Pred_{season}.csv"
 
-pathSubFinal = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/Data/03_Prediction/GP_Pred_Kharif.csv"
+pathSubFinal = root + f"Data/03_Prediction/GP_Pred_{season}_final.csv"
 
 df_preds = pd.read_csv(pathPreds)
 df_preds["State"] = df_preds["key"].apply(lambda x: x.split("_")[0])
