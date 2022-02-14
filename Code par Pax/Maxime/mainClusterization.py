@@ -1,21 +1,31 @@
 import pandas as pd
 import numpy as np
 import os
-from tqdm import tqdm
+import sys
+from tqdm import trange, tqdm
 
-from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster
+STATES_NOT_INCLUDED = {"Rabi": ['Assam', 'Uttarakhand', 'Jharkhand'], "Kharif":['Assam', 'Tamil nadu']}
 
 # Define the root of our project
 root = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/"
-os.chdir(root)
+
+# root = "/users/eleves-b/2019/maxime.bonnin/Datathon/"
+
+# adding roots to the system path
+sys.path.insert(0, root)
+
+season = "Rabi"
+STATES_NOT_INCLUDED = STATES_NOT_INCLUDED[season]
+
+from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster
 
 # Def the path of the clusters file
-pathPreds = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/Outputs/Predictions/kmeans_labels_Kharif"
+pathPreds = root + f"Outputs/Predictions/kmeans_labels_{season}"
 
 # Define the predictions needed
-pathSubmission = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/Data/03_Prediction/GP_Pred_Kharif.csv"
+pathSubmission = root + f"Data/03_Prediction/GP_Pred_{season}.csv"
 
-pathSubFinal = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/Data/03_Prediction/GP_Pred_Kharif.csv"
+pathSubFinal = root + f"GP_Pred_{season}_final.csv"
 
 df_preds = pd.read_csv(pathPreds)
 df_preds["State"] = df_preds["key"].apply(lambda x: x.split("_")[0])
@@ -31,10 +41,19 @@ def fill_submission(df_submission, df_preds, rule="max"):
     """
     Fill the submission with the predictions of the model
     """
-    Clusters = []
-    for i in tqdm(range(len(df_submission))):
+    Clusters = [-1]*len(df_submission)
+    print(len(Clusters), len(df_submission))
+    for i in trange(len(df_submission)):
         key = df_submission.iloc[i]["key"]
-        Clusters.append(get_cluster(get_closest_keys_scoring(key, df_preds, score_fn=score_fn), rule=rule))
+        state = key.split("_")[0]
+        if not state in STATES_NOT_INCLUDED:
+            Clusters[i] = get_cluster(get_closest_keys_scoring(key, df_preds, score_fn=score_fn), rule=rule)[0]
+        
+        # if i==3:
+        #     break
+
+    df_submission["Cluster"] = Clusters
+
     return df_submission
 
 
