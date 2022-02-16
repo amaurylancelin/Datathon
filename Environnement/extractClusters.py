@@ -1,7 +1,6 @@
-from cv2 import normalize
 import numpy as np
 from sklearn.metrics import hamming_loss
-
+import time 
 
 def score_fn(preds, trues):
     """
@@ -49,7 +48,7 @@ def score_fn(preds, trues):
     return score
 
 
-def get_closest_keys_scoring(key, df, score_fn=score_fn):
+def get_closest_keys_scoring(key, dfs, score_fn=score_fn):
 
     """
     Return the closest keys to the given key using a scoring function.
@@ -57,17 +56,22 @@ def get_closest_keys_scoring(key, df, score_fn=score_fn):
 
     # We use these dataframes because they reduce the computation time
     # by reducing the number of comparisons
+    start = time.time()
     cols = ["State", "District", "SubDistrict", "Block", "GP"]
-    state, district, subDistrict, block, GP = key.split("_") 
-    df_State = df[df["State"] == state].copy()
+    state, district, subDistrict, block, GP = key.split("_")[:5]
+    df_State = dfs[state]
     df_District = df_State[df_State["District"] == district].copy()
     df_SubDistrict = df_District[df_District["SubDistrict"] == subDistrict].copy()
     df_Block = df_SubDistrict[df_SubDistrict["Block"] == block].copy()
     df_GP = df_Block[df_Block["GP"] == GP].copy()
-    
+    # print("Time to precompute the dataframes: ", time.time()-start)
+
+    start = time.time()
     if len(df_GP)>0:
         # In this case, we have exact matches
         # No need to use the scoring function
+        # print("Time to answer the query with GP: ", time.time()-start)
+
         return df_GP
 
     elif len(df_Block)>0:
@@ -76,6 +80,7 @@ def get_closest_keys_scoring(key, df, score_fn=score_fn):
                                         np.array([state, district, subDistrict, block, GP])), axis=1)
         # Return the closest keys in the state regarding score_fn
         best = df_Block.sort_values(by=["score"], ascending=False).iloc[0]["score"]
+        # print("Time to answer the query with block: ", time.time()-start)
         return df_Block[df_Block["score"]==best].drop(["score"], axis=1)
 
     elif len(df_SubDistrict)>0:
@@ -84,6 +89,7 @@ def get_closest_keys_scoring(key, df, score_fn=score_fn):
                                             np.array([state, district, subDistrict, block, GP])), axis=1)
         # Return the closest keys in the state regarding score_fn
         best = df_SubDistrict.sort_values(by=["score"], ascending=False).iloc[0]["score"]
+        # print("Time to answer the query with sub district: ", time.time()-start)
         return df_SubDistrict[df_SubDistrict["score"]==best].drop(["score"], axis=1)
 
     elif len(df_District)>0:
@@ -92,26 +98,25 @@ def get_closest_keys_scoring(key, df, score_fn=score_fn):
                                             np.array([state, district, subDistrict, block, GP])), axis=1)
         # Return the closest keys in the state regarding score_fn
         best = df_District.sort_values(by=["score"], ascending=False).iloc[0]["score"]
+        # print("Time to answer the query with district: ", time.time()-start)
         return df_District[df_District["score"]==best].drop(["score"], axis=1)
-    elif len(df_State)>0:
-        # idem
-        df_State["score"] = df_State.apply(lambda x: score_fn(x[cols], 
-                                            np.array([state, district, subDistrict, block, GP])), axis=1) 
-        # Return the closest keys in the state regarding score_fn
-        best = df_State.sort_values(by=["score"], ascending=False).iloc[0]["score"]
-        return df_State[df_State["score"]==best].drop(["score"], axis=1)
 
-    else:
-        # We have no matches
-        df_bis = df.copy()
-        df_bis["score"] = df_bis.apply(lambda x: score_fn(x[cols], 
-                                            np.array([state, district, subDistrict, block, GP])), axis=1)
-        # Return the closest keys in the state regarding score_fn
-        best = df_bis.sort_values(by=["score"], ascending=False).iloc[0]["score"]
-        return df_bis[df_bis["score"]==best].drop(["score"], axis=1)
+    return df_State
 
 
-def get_cluster(df_query, rule="max"):
+
+    # else:
+    #     # We have no matches
+    #     df_bis = df.copy()
+    #     df_bis["score"] = df_bis.apply(lambda x: score_fn(x[cols], 
+    #                                         np.array([state, district, subDistrict, block, GP])), axis=1)
+    #     # Return the closest keys in the state regarding score_fn
+    #     best = df_bis.sort_values(by=["score"], ascending=False).iloc[0]["score"]
+    #     print("Time to answer the query with all data: ", time.time()-start)
+    #     return df_bis[df_bis["score"]==best].drop(["score"], axis=1)
+
+
+def get_cluster(df_query, rule="draw"):
 
     """
     Return the cluster of a given key using the query dataframe based on a specific rule.
