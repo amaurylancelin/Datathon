@@ -49,8 +49,8 @@ def fill_submission(df_submission, dfs_preds, rule="max"):
         key = df_submission.iloc[i]["key"]
         state = key.split("_")[0]
         if not state in STATES_NOT_INCLUDED:
-            Clusters[i] = get_cluster(get_closest_keys_scoring(key, dfs_preds, score_fn=score_fn), rule=rule)[0]
-            # Clusters[i] = get_cluster(get_closest_keys_location(key, dfs_preds), rule=rule)[0]
+            # Clusters[i] = get_cluster(get_closest_keys_scoring(key, dfs_preds, score_fn=score_fn), rule=rule)[0]
+            Clusters[i] = get_cluster(get_closest_keys_location(key, dfs_preds), rule=rule)[0]
 
         
         # if i==3:
