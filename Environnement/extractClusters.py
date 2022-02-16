@@ -48,6 +48,41 @@ def score_fn(preds, trues):
     return score
 
 
+
+def get_closest_keys_location(key, dfs):
+
+    """
+    Return the closest keys to the given key using a scoring function.
+    """
+
+    # We use these dataframes because they reduce the computation time
+    # by reducing the number of comparisons
+    start = time.time()
+    cols = ["State", "District", "SubDistrict", "Block", "GP"]
+    state, district, subDistrict, block, GP = key.split("_")[:5]
+    df_State = dfs[state]
+    df_District = df_State[df_State["District"] == district].copy()
+    df_SubDistrict = df_District[df_District["SubDistrict"] == subDistrict].copy()
+    df_Block = df_SubDistrict[df_SubDistrict["Block"] == block].copy()
+    df_GP = df_Block[df_Block["GP"] == GP].copy()
+    # print("Time to precompute the dataframes: ", time.time()-start)
+
+    if len(df_GP)>0:
+
+        return df_GP
+
+    elif len(df_Block)>0:
+        return df_Block
+
+    elif len(df_SubDistrict)>0:
+        return df_SubDistrict
+
+    elif len(df_District)>0:
+        return df_District
+
+    return df_State
+
+
 def get_closest_keys_scoring(key, dfs, score_fn=score_fn):
 
     """

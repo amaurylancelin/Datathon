@@ -17,7 +17,7 @@ sys.path.insert(0, root)
 season = "Rabi"
 STATES_NOT_INCLUDED = STATES_NOT_INCLUDED[season]
 
-from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster
+from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster, get_closest_keys_location
 
 # Def the path of the clusters file
 pathPreds = root + f"Outputs/Predictions/kmeans_labels_{season}"
@@ -50,6 +50,8 @@ def fill_submission(df_submission, dfs_preds, rule="max"):
         state = key.split("_")[0]
         if not state in STATES_NOT_INCLUDED:
             Clusters[i] = get_cluster(get_closest_keys_scoring(key, dfs_preds, score_fn=score_fn), rule=rule)[0]
+            # Clusters[i] = get_cluster(get_closest_keys_location(key, dfs_preds), rule=rule)[0]
+
         
         # if i==3:
         #     break
