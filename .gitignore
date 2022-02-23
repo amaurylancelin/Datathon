@@ -3,17 +3,11 @@
 pipeline_Descartes.ipynb
 /Code Brouillon/Test unification Datasets initiaux
 /03_Prediction
-<<<<<<< HEAD
 Outputs/data_preprocessedKmeans_Rabi
 Outputs/data_preprocessedKmeans_Kharif
 Data/RawData/stats/*.json
-=======
-/Maps
-Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Rabi
-Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Kharif
-maps_unused
->>>>>>> 93ef3588f2da2af48a10f93eb2e179bdd3c5a4ec
 
+.vscode
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
