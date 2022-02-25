@@ -71,7 +71,7 @@ def plot_crops(pathData,admin_level):
     # print(df_admin_level_crop)
     list_admin_level = pd.unique(df_admin_level_crop[admin_level])
 
-    list_admin_level_crop = get_liste_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level)
+    list_admin_level_crop = get_list_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level)
     df_reduced = pd.DataFrame(list_admin_level_crop, columns=[admin_level, 'Crop'])
 
     if admin_level == 'State' :
@@ -132,7 +132,7 @@ def plot_yields(pathData,admin_level,K):
     # print(df_admin_level_yield)
     list_admin_level = pd.unique(df_admin_level_yield[admin_level])
 
-    list_admin_level_yield = get_liste_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K)
+    list_admin_level_yield = get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K)
     df_reduced = pd.DataFrame(list_admin_level_yield, columns=[admin_level, 'Yield'])
     print(df_reduced)
 
