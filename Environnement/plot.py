@@ -1,4 +1,4 @@
-git import os
+import os
 import pandas as pd
 import geopandas as gpd
 import numpy as np
@@ -6,7 +6,6 @@ from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 
 #admin_level stands for administrative level : states, districts,...
-
 def get_liste_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level):
     liste_admin_level_cluster = []
     for i in range(len(list_admin_level)):
@@ -39,7 +38,7 @@ def plot_on_map(method_labels,pathData,admin_level):
         map_path = "maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_2'
     else :
-        map_path = "maps/ind_adm_shp/IND_adm3.shp"
+        map_path = "../../maps/ind_adm_shp/IND_adm3.shp"
         name = 'NAME_3'
 
     map_gdf = gpd.read_file(map_path)
@@ -53,7 +52,7 @@ def plot_on_map(method_labels,pathData,admin_level):
 # %%
 
 
-def get_list_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level):
+def get_liste_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level):
     liste_admin_level_crop = []
     for i in range(len(list_admin_level)):
         l = []
@@ -71,7 +70,7 @@ def plot_crops(pathData,admin_level):
     # print(df_admin_level_crop)
     list_admin_level = pd.unique(df_admin_level_crop[admin_level])
 
-    list_admin_level_crop = get_list_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level)
+    list_admin_level_crop = get_liste_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level)
     df_reduced = pd.DataFrame(list_admin_level_crop, columns=[admin_level, 'Crop'])
 
     if admin_level == 'State' :
@@ -96,7 +95,7 @@ def plot_crops(pathData,admin_level):
 #%%
 
 # il faut modifier un peu clean data pour que ce plot fonctionne
-def get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K):
+def get_liste_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K):
     liste_admin_level_yield = []
     yields = []
     for i in range(len(list_admin_level)):
@@ -132,7 +131,7 @@ def plot_yields(pathData,admin_level,K):
     # print(df_admin_level_yield)
     list_admin_level = pd.unique(df_admin_level_yield[admin_level])
 
-    list_admin_level_yield = get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K)
+    list_admin_level_yield = get_liste_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K)
     df_reduced = pd.DataFrame(list_admin_level_yield, columns=[admin_level, 'Yield'])
     print(df_reduced)
 
