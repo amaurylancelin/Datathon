@@ -6,6 +6,9 @@ pipeline_Descartes.ipynb
 Outputs/data_preprocessedKmeans_Rabi
 Outputs/data_preprocessedKmeans_Kharif
 Data/RawData/stats/*.json
+Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Rabi
+Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Kharif
+
 
 .vscode
 # Byte-compiled / optimized / DLL files
