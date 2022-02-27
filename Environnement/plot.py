@@ -32,10 +32,10 @@ def plot_on_map(method_labels,pathData,admin_level):
     df_reduced = pd.DataFrame(list_admin_level_cluster, columns=[admin_level, 'Clusters'])
 
     if admin_level == 'State' :
-        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "../../maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_1'
     elif admin_level == 'District' :
-        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "../../maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_2'
     else :
         map_path = "../../maps/ind_adm_shp/IND_adm3.shp"
@@ -48,7 +48,7 @@ def plot_on_map(method_labels,pathData,admin_level):
     ax.axis('off')
     ax.set_title('Clustering with k-means, averaged on each '+ admin_level,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
-    fig = merged.plot(column='Clusters', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
+    fig = merged.plot(column='Clusters', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2', categorical=True, legend=True)
 # %%
 
 
