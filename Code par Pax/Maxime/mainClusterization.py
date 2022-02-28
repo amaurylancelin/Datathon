@@ -8,13 +8,14 @@ STATES_NOT_INCLUDED = {"Rabi": ['assam', 'uttarakhand', 'jharkhand'], "Kharif":[
 
 # Define the root of our project
 # root = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/"
-
-root = "/users/eleves-b/2019/maxime.bonnin/Datathon_main/"
+root = "C:/Users/Amaury Lancelin/OneDrive/Main Dossier frr ON/Études/Polytechnique/X 3A/Datathon SCOR/Github (entre lézard)/Datathon/"
+# root = "/users/eleves-b/2019/maxime.bonnin/Datathon_main/"
 
 # adding roots to the system path
 sys.path.insert(0, root)
 
-season = "Kharif"
+date = "26-02"
+season = "Rabi"
 print("Season to be filled...",season)
 
 STATES_NOT_INCLUDED = STATES_NOT_INCLUDED[season]
@@ -22,13 +23,13 @@ STATES_NOT_INCLUDED = STATES_NOT_INCLUDED[season]
 from Environnement.extractClusters import get_closest_keys_scoring, score_fn, get_cluster, get_closest_keys_location
 
 # Def the path of the clusters file
-pathPreds = root + f"Outputs/Predictions/kmeans_labels_{season}_14-02"
+pathPreds = root + f"Outputs/Predictions/kmeans_labels_{season}_{date}"
 
 # Define the predictions needed
 pathSubmissionTranslated = root + f"Data/03_Prediction/GP_Pred_{season}_ID_translated.csv"
 pathSubmission = root + f"Data/03_Prediction/GP_Pred_{season}_ID.csv"
 
-pathSubFinal = root + f"Data/03_Prediction/GP_Pred_{season}_final.csv"
+pathSubFinal = root + f"Outputs/Results/GP_Pred_{season}_{date}.csv"
 
 df_preds = pd.read_csv(pathPreds)
 
