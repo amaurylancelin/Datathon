@@ -175,6 +175,7 @@ def regroupe_crop(df):
             crop_to_merge[crop] = crop
     crop_to_merge['Ragi IRR'] = "Ragi Un-IRR"
     crop_to_merge['ONION IRR'] = 'Onion'
+    crop_to_merge['Paddy II'] = 'Paddy'
     df['Crop'] = df["Crop"].map(crop_to_merge)
     return df
 

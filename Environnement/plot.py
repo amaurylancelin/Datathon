@@ -4,6 +4,7 @@ import geopandas as gpd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
+from utils import regroupe_crop
 
 #admin_level stands for administrative level : states, districts,...
 def get_liste_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level):
@@ -67,7 +68,7 @@ def get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop
 
 def plot_crops(pathData,admin_level):      
     df_init = pd.read_csv(pathData)
-    df_admin_level_crop = df_init[[admin_level, 'Crop']]
+    df_admin_level_crop = regroupe_crop(df_init[[admin_level, 'Crop']])
     df_admin_level_crop['numCrop'] = pd.factorize(df_admin_level_crop['Crop'])[0]
     # print(df_admin_level_crop)
     list_admin_level = pd.unique(df_admin_level_crop[admin_level])
