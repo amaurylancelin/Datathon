@@ -126,8 +126,7 @@ def clean_data_state(df):
     #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
     df = df.drop(columns = ["District","Sub-District","Block","GP"])
     
-    le = LabelEncoder()
-    df["State"] = le.fit_transform(df["State"])
+
     #On remplace les rendements NA restants par leur moyenne
     for year in range(2002,2018):
         col = f"{year} Yield"
