@@ -52,45 +52,49 @@ def plot_on_map(method_labels,pathData,admin_level):
 # %%
 
 
-def get_liste_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level):
-    liste_admin_level_crop = []
+def get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level):
+    list_admin_level_crop = []
     for i in range(len(list_admin_level)):
         l = []
         l.append(list_admin_level[i])
         #print(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["Crop"].to_numpy())
-        if len(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["Crop"].to_numpy().astype(int)) > 0 :
-            l.append(np.bincount(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["Crop"].to_numpy().astype(int)).argmax())
-        liste_admin_level_crop.append(l)
-    return liste_admin_level_crop
+        if len(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["numCrop"].to_numpy().astype(int)) > 0 :
+            max_crop_num = np.bincount(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["numCrop"].to_numpy().astype(int)).argmax()
+            max_crop = df_admin_level_crop.loc[df_admin_level_crop['numCrop'] == max_crop_num, 'Crop'].iloc[0]
+            l.append(max_crop)
+        list_admin_level_crop.append(l)
+    return list_admin_level_crop
 
 def plot_crops(pathData,admin_level):      
     df_init = pd.read_csv(pathData)
     df_admin_level_crop = df_init[[admin_level, 'Crop']]
-    df_admin_level_crop['Crop'] = pd.factorize(df_admin_level_crop['Crop'])[0]
+    df_admin_level_crop['numCrop'] = pd.factorize(df_admin_level_crop['Crop'])[0]
     # print(df_admin_level_crop)
     list_admin_level = pd.unique(df_admin_level_crop[admin_level])
+    list_crops = pd.unique(df_admin_level_crop['Crop'])
 
-    list_admin_level_crop = get_liste_admin_level_crop(list_admin_level, df_admin_level_crop, admin_level)
+    list_admin_level_crop = get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level)
     df_reduced = pd.DataFrame(list_admin_level_crop, columns=[admin_level, 'Crop'])
 
+
     if admin_level == 'State' :
-        map_path = "maps/gadm36_IND_shp/gadm36_IND_1.shp"
+        map_path = "../../maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
     elif admin_level == 'District' :
-        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "../../maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_2'
     else :
-        map_path = "maps/ind_adm_shp/IND_adm3.shp"
+        map_path = "../../maps/ind_adm_shp/IND_adm3.shp"
         name = 'NAME_3'
 
     map_gdf = gpd.read_file(map_path)
     merged = map_gdf.set_index(name).join(df_reduced.set_index(admin_level))
 
-    fig, ax = plt.subplots(1, figsize=(12, 12))
+    fig, ax = plt.subplots(1, figsize=(12, 16))
     ax.axis('off')
     ax.set_title('Main crop in each '+ admin_level,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
-    fig = merged.plot(column='Crop', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
+    fig = merged.plot(column='Crop', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2', categorical=True, legend=True)
 
 #%%
 
