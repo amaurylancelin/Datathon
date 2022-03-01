@@ -8,6 +8,8 @@ Outputs/data_preprocessedKmeans_Kharif
 Data/RawData/stats/*.json
 Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Rabi
 Outputs/Embeddings and preprocessed data/data_preprocessedKmeans_Kharif
+maps_unused
+Data/ClimateData/*.nc
 
 
 .vscode

@@ -1,17 +1,17 @@
 ,state,cluster
 0,Andhra Pradesh,2
-1,Bihar,4
-2,Chhattisgarh,0
+1,Bihar,0
+2,Chhattisgarh,3
 3,Gujarat,1
 4,Haryana,1
-5,Jharkhand,0
-6,Karnataka,4
-7,Madhya Pradesh,0
-8,Maharashtra,4
-9,Odisha,0
+5,Jharkhand,3
+6,Karnataka,0
+7,Madhya Pradesh,3
+8,Maharashtra,0
+9,Odisha,3
 10,Rajasthan,1
-11,Tamil Nadu,4
-12,Telangana,4
-13,Uttar Pradesh,4
-14,Uttarakhand,3
-15,West Bengal,0
+11,Tamil Nadu,0
+12,Telangana,0
+13,Uttar Pradesh,0
+14,Uttarakhand,4
+15,West Bengal,3
