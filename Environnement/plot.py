@@ -141,13 +141,13 @@ def plot_yields(pathData,admin_level,K):
     print(df_reduced)
 
     if admin_level == 'State' :
-        map_path = "maps/gadm36_IND_shp/gadm36_IND_1.shp"
+        map_path = "../../maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
     elif admin_level == 'District' :
-        map_path = "maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "../../maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_2'
     else :
-        map_path = "maps/ind_adm_shp/IND_adm3.shp"
+        map_path = "../../maps/ind_adm_shp/IND_adm3.shp"
         name = 'NAME_3'
 
     map_gdf = gpd.read_file(map_path)
