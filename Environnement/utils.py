@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 
 # from os import isfile, listdir, join
 from tqdm import tqdm
-
+import json
 # %%
 # pathData = "RawData/2017/2017_Andhra Pradesh_Kharif.xlsx"
 # df=pd.read_excel(pathData)
@@ -124,7 +124,7 @@ def clean_data_state(df):
     for state in pd.unique(df["State"]):
         df[df["State"]==state] = df[df["State"]==state].fillna(df[df["State"]==state].mean(numeric_only=True))  
     #Suppression des colonnes des infos administratives et definition de la colonne "key" conformément aux datasets de 03_pred
-    df = df.drop(columns = ["District","Sub-District","Block","GP"])
+    df = df.drop(columns = ["District","Sub-District","Block","GP","Crop"])
     
 
     #On remplace les rendements NA restants par leur moyenne
@@ -176,7 +176,35 @@ def regroupe_crop(df):
     crop_to_merge['Ragi IRR'] = "Ragi Un-IRR"
     crop_to_merge['ONION IRR'] = 'Onion'
     crop_to_merge['Paddy II'] = 'Paddy'
+    crop_to_merge['Potato Un-IRR'] = 'Potato IRR'
+    crop_to_merge['Chilli IRR'] = 'Chilli Un-IRR'
+    
     df['Crop'] = df["Crop"].map(crop_to_merge)
+    return df
+
+# %%
+def add_climate_clusters(df,rabi):
+    """ Ajoute les clusters climatiques au dataframe df contenant une colonne State, rabi est un booléen indiquant la saison"""
+    if rabi:
+        saison = "rabi"
+    else:
+        saison = "kharif"
+    path = "../../Outputs/Predictions/climate_clusters_"+saison+".json"
+    with open(path) as json_file:
+        dict = json.load(json_file)
+    df["climate_clusters"] = df["State"].map(dict)
+    return df
+
+def add_crop_categories(df,rabi):
+    """ Ajoute les catégories de crop au dataframe df contenant une colonne Crop, rabi est un booléen indiquant la saison"""
+    if rabi:
+        saison = "Rabi"
+    else:
+        saison = "Kharif"
+    path = "../../Outputs/Predictions/Crop_"+saison+".json"
+    with open(path) as json_file:
+        dict = json.load(json_file)
+    df["crop_categories"] = df["Crop"].map(dict)
     return df
 
 # %%
