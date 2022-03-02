@@ -1,9 +1,14 @@
 import os
 import pandas as pd
-import geopandas as gpd
+try:
+    import geopandas as gpd
+except ImportError:
+    pass
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
+from pandas.plotting import parallel_coordinates
+import seaborn as sns
 from utils import regroupe_crop
 
 #admin_level stands for administrative level : states, districts,...
@@ -158,3 +163,50 @@ def plot_yields(pathData,admin_level,K):
     ax.set_title('Average yield in each '+ admin_level,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
     fig = merged.plot(column='Yield', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2',legend=True)
+    
+    
+
+palette = sns.color_palette("bright", 10)
+
+def display_parallel_coordinates(df, num_clusters):
+    '''Display a parallel coordinates plot for the clusters in df'''
+
+    # Select data points for individual clusters
+    cluster_points = []
+    for i in range(num_clusters):
+        cluster_points.append(df[df.cluster==i])
+    
+    # Create the plot
+    fig = plt.figure(figsize=(12, 15))
+    title = fig.suptitle("Parallel Coordinates Plot for the Clusters", fontsize=18)
+    fig.subplots_adjust(top=0.95, wspace=0)
+
+    # Display one plot for each cluster, with the lines for the main cluster appearing over the lines for the other clusters
+    for i in range(num_clusters):    
+        plt.subplot(num_clusters, 1, i+1)
+        for j,c in enumerate(cluster_points): 
+            if i!= j:
+                pc = parallel_coordinates(c, 'cluster', color=[addAlpha(palette[j],0.2)])
+        pc = parallel_coordinates(cluster_points[i], 'cluster', color=[addAlpha(palette[i],0.5)])
+
+        # Stagger the axes
+        ax=plt.gca()
+        for tick in ax.xaxis.get_major_ticks()[1::2]:
+            tick.set_pad(20)        
+
+
+def display_parallel_coordinates_centroids(df, num_clusters):
+    '''Display a parallel coordinates plot for the centroids in df'''
+
+    # Create the plot
+    fig = plt.figure(figsize=(12, 5))
+    title = fig.suptitle("Parallel Coordinates plot for the Centroids", fontsize=18)
+    fig.subplots_adjust(top=0.9, wspace=0)
+
+    # Draw the chart
+    parallel_coordinates(df, 'cluster', color=palette)
+
+    # Stagger the axes
+    ax=plt.gca()
+    for tick in ax.xaxis.get_major_ticks()[1::2]:
+        tick.set_pad(20)   

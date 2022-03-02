@@ -183,7 +183,7 @@ def regroupe_crop(df):
     return df
 
 # %%
-def add_climate_clusters(df,rabi):
+def add_climate_clusters(df,rabi, lower = False):
     """ Ajoute les clusters climatiques au dataframe df contenant une colonne State, rabi est un booléen indiquant la saison"""
     if rabi:
         saison = "rabi"
@@ -192,8 +192,11 @@ def add_climate_clusters(df,rabi):
     path = "../../Outputs/Predictions/climate_clusters_"+saison+".json"
     with open(path) as json_file:
         dict = json.load(json_file)
-    df["climate_clusters"] = df["State"].map(dict)
-    return df
+        if lower :
+            dict =  {k.lower(): v for k, v in dict.items()}
+    new_df = df.copy()
+    new_df["climate_clusters"] = new_df["State"].map(dict)
+    return new_df
 
 def add_crop_categories(df,rabi):
     """ Ajoute les catégories de crop au dataframe df contenant une colonne Crop, rabi est un booléen indiquant la saison"""
@@ -204,7 +207,8 @@ def add_crop_categories(df,rabi):
     path = "../../Outputs/Predictions/Crop_"+saison+".json"
     with open(path) as json_file:
         dict = json.load(json_file)
-    df["crop_categories"] = df["Crop"].map(dict)
-    return df
+    new_df = df.copy()
+    new_df["crop_categories"] = new_df["Crop"].map(dict)
+    return new_df
 
 # %%

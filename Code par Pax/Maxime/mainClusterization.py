@@ -25,7 +25,7 @@ from Environnement.extractClusters import get_closest_keys_scoring, score_fn, ge
 # Def the path of the clusters file
 pathPreds = root + f"Outputs/Predictions/kmeans_labels_{season}_{date}"
 
-# Define the predictions needed
+# Define the predictions needed²
 pathSubmissionTranslated = root + f"Data/03_Prediction/GP_Pred_{season}_ID_translated.csv"
 pathSubmission = root + f"Data/03_Prediction/GP_Pred_{season}_ID.csv"
 
