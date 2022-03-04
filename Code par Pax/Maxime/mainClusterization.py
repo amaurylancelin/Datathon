@@ -14,7 +14,7 @@ root = "C:/Users/Amaury Lancelin/OneDrive/Main Dossier frr ON/Études/Polytechni
 # adding roots to the system path
 sys.path.insert(0, root)
 
-date = "26-02"
+date = "05-03"
 season = "Rabi"
 print("Season to be filled...",season)
 
