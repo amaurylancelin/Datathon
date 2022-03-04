@@ -127,7 +127,7 @@ def plot_db(pen =[1,1], nb_samples=200,all_data=False):
 
 #COMPUTE AND SVAE CLUSTERS 
 print("COMPUTE CLUSTERS RABI")
-db_index_R, labels_R, _ = compute_clusters(Rabi, nb_clusters=9,pen=[3,3],all_data=True)
+db_index_R, labels_R, _ = compute_clusters(Rabi, nb_clusters=9,pen=[4,4],all_data=True)
 print("db_index_R = ",db_index_R)
 databis_R=df_R.copy()
 databis_R['0']= labels_R
@@ -135,7 +135,7 @@ databis_R=databis_R[['0']]
 databis_R.to_csv(f"../../Outputs/Predictions/kproto_labels_Rabi_{date}")
 
 print("COMPUTE CLUSTERS KHARIF")
-db_index_K, labels_K, _ = compute_clusters(Kharif, nb_clusters=13,pen=[3,3],all_data=True)
+db_index_K, labels_K, _ = compute_clusters(Kharif, nb_clusters=13,pen=[4,4],all_data=True)
 print("db_index_K = ",db_index_K)
 databis_K=df_K.copy()
 databis_K['0']= labels_K
