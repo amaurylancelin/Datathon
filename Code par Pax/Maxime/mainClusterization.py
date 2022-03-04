@@ -8,8 +8,9 @@ STATES_NOT_INCLUDED = {"Rabi": ['assam', 'uttarakhand', 'jharkhand'], "Kharif":[
 
 # Define the root of our project
 # root = "/Users/maximebonnin/Documents/Projects/SCOR/Datathon/"
-root = "C:/Users/Amaury Lancelin/OneDrive/Main Dossier frr ON/Études/Polytechnique/X 3A/Datathon SCOR/Github (entre lézard)/Datathon/"
+# root = "C:/Users/Amaury Lancelin/OneDrive/Main Dossier frr ON/Études/Polytechnique/X 3A/Datathon SCOR/Github (entre lézard)/Datathon/"
 # root = "/users/eleves-b/2019/maxime.bonnin/Datathon_main/"
+root = "/users/eleves-b/2019/amaury.lancelin/Datathon/"
 
 # adding roots to the system path
 sys.path.insert(0, root)
