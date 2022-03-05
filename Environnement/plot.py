@@ -1,5 +1,7 @@
 import os
 import pandas as pd
+
+from Environnement.utils import add_climate_clusters, regroupe_crop, add_crop_categories
 try:
     import geopandas as gpd
 except ImportError:
@@ -9,7 +11,6 @@ from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 from pandas.plotting import parallel_coordinates
 import seaborn as sns
-from utils import regroupe_crop
 
 #admin_level stands for administrative level : states, districts,...
 def get_liste_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level):
@@ -66,21 +67,25 @@ def get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop
         #print(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["Crop"].to_numpy())
         if len(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["numCrop"].to_numpy().astype(int)) > 0 :
             max_crop_num = np.bincount(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["numCrop"].to_numpy().astype(int)).argmax()
-            max_crop = df_admin_level_crop.loc[df_admin_level_crop['numCrop'] == max_crop_num, 'Crop'].iloc[0]
+            max_crop = df_admin_level_crop.loc[df_admin_level_crop['numCrop'] == max_crop_num, "crop_categories"].iloc[0]
             l.append(max_crop)
         list_admin_level_crop.append(l)
     return list_admin_level_crop
 
-def plot_crops(pathData,admin_level):      
+def plot_crops(pathData,admin_level, rabi): 
+    """rabi est un booléen indiquant la saison"""     
     df_init = pd.read_csv(pathData)
-    df_admin_level_crop = regroupe_crop(df_init[[admin_level, 'Crop']])
-    df_admin_level_crop['numCrop'] = pd.factorize(df_admin_level_crop['Crop'])[0]
-    # print(df_admin_level_crop)
+    #df_admin_level_crop = regroupe_crop(df_init[[admin_level, 'Crop']])
+
+    df_admin_level_crop = add_crop_categories(df_init, rabi)
+
+    df_admin_level_crop['numCrop'] = pd.factorize(df_admin_level_crop["crop_categories"])[0]
+    print(pd.unique(df_admin_level_crop[df_admin_level_crop['numCrop'] == -1]['Crop']))
     list_admin_level = pd.unique(df_admin_level_crop[admin_level])
-    list_crops = pd.unique(df_admin_level_crop['Crop'])
+    list_crops = pd.unique(df_admin_level_crop["crop_categories"])
 
     list_admin_level_crop = get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level)
-    df_reduced = pd.DataFrame(list_admin_level_crop, columns=[admin_level, 'Crop'])
+    df_reduced = pd.DataFrame(list_admin_level_crop, columns=[admin_level, "crop_categories"])
 
 
     if admin_level == 'State' :
@@ -100,7 +105,7 @@ def plot_crops(pathData,admin_level):
     ax.axis('off')
     ax.set_title('Main crop in each '+ admin_level,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
-    fig = merged.plot(column='Crop', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2', categorical=True, legend=True)
+    fig = merged.plot(column='crop_categories', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2', categorical=True, legend=True)
 
 #%%
 

@@ -1,1 +1,12 @@
-{"Bajra": "Cereales", "Barley": "Cereales", "Bengal Gram (Chana)": "Legumineuses", "Boro Paddy": "Riz", "Castor": "Oleagineux", "Chilli": "Legumes ou fleurs", "Coriander": "Herbace", "Fenugreek": "Oleagineux", "Garlic": "Legumes ou fleurs", "Groundnut": "Oleagineux", "Isabgol": "Legumes ou fleurs", "Jeera": "Herbace", "Jowar": "Cereales", "Lac": "Herbace", "Lentil (Masoor)": "Legumineuses", "Linseed": "Oleagineux", "Maize": "Cereales", "Moong": "Legumes ou fleurs", "Moth Un-IRR": "Legumineuses", "Mustard": "Herbace", "Onion": "Legumes ou fleurs", "Paddy": "Riz", "Pea": "Legumineuses", "Potato": "Legumes ou fleurs", "Ragi Un-IRR": "Cereales", "Red Chilli": "Legumes ou fleurs", "Safflower": "Oleagineux", "Saunf": "Herbace", "Sugarcane": "canne a sucre", "Sunflower": "Oleagineux", "Taramira": "Legumes ou fleurs", "Til (Sesame)": "Cereales", "Tomato": "Legumes ou fleurs", "Urad": "Legumineuses", "Wheat": "Cereales", "Chilli Un-IRR": "Legumes ou fleurs"}
+{"Bajra": "Cereales", "Barley": "Cereales", "Bengal Gram (Chana)": "Legumineuses", "Boro Paddy": "Riz", "Castor": "Oleagineux", "Chilli": "Legumes ou fleurs", 
+    "Coriander": "Herbace", "Fenugreek": "Oleagineux", "Garlic": "Legumes ou fleurs", "Groundnut": "Oleagineux", "Isabgol": "Legumes ou fleurs", "Jeera": "Herbace", 
+    "Jowar": "Cereales", "Lac": "Herbace", "Lentil (Masoor)": "Legumineuses", "Linseed": "Oleagineux", "Maize": "Cereales", "Moong": "Legumes ou fleurs", 
+    "Moth Un-IRR": "Legumineuses", "Mustard": "Herbace", "Onion": "Legumes ou fleurs", "Paddy": "Riz", "Pea": "Legumineuses", "Potato": "Legumes ou fleurs", 
+    "Ragi Un-IRR": "Cereales", "Red Chilli": "Legumes ou fleurs", "Safflower": "Oleagineux", "Saunf": "Herbace", "Sugarcane": "canne a sucre", "Sunflower": "Oleagineux", 
+    "Taramira": "Legumes ou fleurs", "Til (Sesame)": "Cereales", "Tomato": "Legumes ou fleurs", "Urad": "Legumineuses", "Wheat": "Cereales", "Chilli Un-IRR": "Legumes ou fleurs",
+    "Wheat IRR": "Cereales", "Wheat Un-IRR": "Cereales", "Paddy IRR": "Riz", "Bengal Gram (Chana) IRR": "Legumineuses", 
+    "Bengal Gram (Chana) Un-IRR": "Legumineuses", "Urad Un-IRR": "Legumineuses", "Moong Un-IRR": "Legumes ou fleurs", 
+    "Groundnut Un-IRR": "Oleagineux", "Jowar IRR": "Cereales", "Jowar Un-IRR": "Cereales", "Linseed Un-IRR": "Oleagineux", 
+    "Maize IRR": "Cereales", "Maize Un-IRR": "Cereales", "ONION IRR": "Legumes ou fleurs", "Potato IRR": "Legumes ou fleurs", "Ragi IRR": "Cereales",
+    "Safflower Un-IRR": "Oleagineux", "Sunflower IRR": "Oleagineux", "Sunflower Un-IRR": "Oleagineux", "Groundnut IRR": "Oleagineux", "Paddy II": "Riz"
+}
