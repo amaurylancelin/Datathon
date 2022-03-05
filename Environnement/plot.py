@@ -26,7 +26,7 @@ def get_liste_admin_level_cluster(list_admin_level, df_admin_level_cluster, admi
 # plot clusters on map of India
 # typiquement admin_level = 'District', method_labels = kmeans.labels_ par exemple
 # pathData renvoie vers les données brutes initiales
-def plot_on_map(method_labels,pathData,admin_level):      
+def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):      
     labels_df = pd.DataFrame(method_labels, columns=['labels'])
     df_init = pd.read_csv(pathData)
     df_init['cluster'] = labels_df['labels'] 
@@ -54,7 +54,7 @@ def plot_on_map(method_labels,pathData,admin_level):
     ax.axis('off')
     ax.set_title('Clustering with k-means, averaged on each '+ admin_level,
                 fontdict={'fontsize': '15', 'fontweight' : '3'})
-    fig = merged.plot(column='Clusters', cmap='RdYlGn', linewidth=0.5, ax=ax, edgecolor='0.2', categorical=True, legend=True)
+    fig = merged.plot(column='Clusters', cmap=cmap, linewidth=0.5, ax=ax, edgecolor='0.2', categorical=True, legend=True)
 # %%
 
 
