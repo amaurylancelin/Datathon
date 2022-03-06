@@ -1,33 +1,46 @@
 import os
 import pandas as pd
-
-from Environnement.utils import add_climate_clusters, regroupe_crop, add_crop_categories
-try:
-    import geopandas as gpd
-except ImportError:
-    pass
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 from pandas.plotting import parallel_coordinates
 import seaborn as sns
 
+try:
+    import geopandas as gpd
+    import_error = False
+except ImportError:
+    import_error = True
+    pass
+
+from Environnement.utils import (
+    add_climate_clusters, 
+    regroupe_crop, 
+    add_crop_categories,
+    add_Loss,
+    clean_data
+    )
+    
+
 #admin_level stands for administrative level : states, districts,...
-def get_liste_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level):
-    liste_admin_level_cluster = []
+def get_list_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level):
+    list_admin_level_cluster = []
     for i in range(len(list_admin_level)):
         l = []
         l.append(list_admin_level[i])
         #print(df_admin_level_cluster[df_admin_level_cluster[admin_level] == list_admin_level[i]]["cluster"].to_numpy())
         if len(df_admin_level_cluster[df_admin_level_cluster[admin_level] == list_admin_level[i]]["cluster"].to_numpy().astype(int)) > 0 :
             l.append(np.bincount(df_admin_level_cluster[df_admin_level_cluster[admin_level] == list_admin_level[i]]["cluster"].to_numpy().astype(int)).argmax())
-        liste_admin_level_cluster.append(l)
-    return liste_admin_level_cluster
+        list_admin_level_cluster.append(l)
+    return list_admin_level_cluster
 
 # plot clusters on map of India
 # typiquement admin_level = 'District', method_labels = kmeans.labels_ par exemple
 # pathData renvoie vers les données brutes initiales
-def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):      
+def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
+    if import_error:
+        raise ImportError("geopandas is not installed")
+    
     labels_df = pd.DataFrame(method_labels, columns=['labels'])
     df_init = pd.read_csv(pathData)
     df_init['cluster'] = labels_df['labels'] 
@@ -35,7 +48,7 @@ def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
 
     list_admin_level = pd.unique(df_admin_level_cluster[admin_level])
 
-    list_admin_level_cluster = get_liste_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level)
+    list_admin_level_cluster = get_list_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level)
     df_reduced = pd.DataFrame(list_admin_level_cluster, columns=[admin_level, 'Clusters'])
 
     if admin_level == 'State' :
@@ -59,7 +72,7 @@ def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
 # %%
 
 
-def get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level):
+def get_list_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level):
     list_admin_level_crop = []
     for i in range(len(list_admin_level)):
         l = []
@@ -73,7 +86,11 @@ def get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop
     return list_admin_level_crop
 
 def plot_crops(pathData,admin_level, rabi): 
-    """rabi est un booléen indiquant la saison"""     
+    """rabi est un booléen indiquant la saison"""  
+
+    if import_error:
+        raise ImportError("geopandas is not installed")
+
     df_init = pd.read_csv(pathData)
     #df_admin_level_crop = regroupe_crop(df_init[[admin_level, 'Crop']])
 
@@ -84,7 +101,7 @@ def plot_crops(pathData,admin_level, rabi):
     list_admin_level = pd.unique(df_admin_level_crop[admin_level])
     list_crops = pd.unique(df_admin_level_crop["crop_categories"])
 
-    list_admin_level_crop = get_liste_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level)
+    list_admin_level_crop = get_list_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level)
     df_reduced = pd.DataFrame(list_admin_level_crop, columns=[admin_level, "crop_categories"])
 
 
@@ -110,8 +127,8 @@ def plot_crops(pathData,admin_level, rabi):
 #%%
 
 # il faut modifier un peu clean data pour que ce plot fonctionne
-def get_liste_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K):
-    liste_admin_level_yield = []
+def get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K):
+    list_admin_level_yield = []
     yields = []
     for i in range(len(list_admin_level)):
         l = []
@@ -121,21 +138,25 @@ def get_liste_admin_level_yield(list_admin_level, df_admin_level_yield, admin_le
             mean_yield = np.mean(df_admin_level_yield[df_admin_level_yield[admin_level] == list_admin_level[i]]["2017 Yield"].to_numpy().astype(float))
             yields.append(mean_yield)
             l.append(mean_yield)
-        liste_admin_level_yield.append(l)
+        list_admin_level_yield.append(l)
     yields_arr = np.array(yields)
     m = np.min(yields_arr)
     M = np.max(yields_arr)
     step = (M-m)/K
     for i in range(len(list_admin_level)):
-        val = liste_admin_level_yield[i][1]
+        val = list_admin_level_yield[i][1]
         value = m
         for j in range(K):
             if val >= (m + j*step) and val < (m + (j+1)*step) :
                 value = m + (j+1/2)*step
-        liste_admin_level_yield[i][1] = value
-    return liste_admin_level_yield
+        list_admin_level_yield[i][1] = value
+    return list_admin_level_yield
 
-def plot_yields(pathData,admin_level,K):      
+def plot_yields(pathData,admin_level,K):
+
+    if import_error:
+        raise ImportError("geopandas is not installed")
+
     df_init = pd.read_csv(pathData)
     df_clean = add_Loss(clean_data(df_init))
     df_admin_level_yield = df_clean[[admin_level,'2017 Yield']]
@@ -146,7 +167,7 @@ def plot_yields(pathData,admin_level,K):
     # print(df_admin_level_yield)
     list_admin_level = pd.unique(df_admin_level_yield[admin_level])
 
-    list_admin_level_yield = get_liste_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K)
+    list_admin_level_yield = get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K)
     df_reduced = pd.DataFrame(list_admin_level_yield, columns=[admin_level, 'Yield'])
     print(df_reduced)
 

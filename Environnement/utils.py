@@ -19,8 +19,8 @@ import json
 def unify_data(YEAR = 2019, SEASON = 'Kharif') :
     liste_dataframe = []
     monRepertoire = "RawData/"+str(YEAR)
-    for f in tqdm(listdir(monRepertoire)) :
-        if isfile(join(monRepertoire, f)) and (f[-11:-5] == SEASON or f[-9:-5] == SEASON):
+    for f in tqdm(os.listdir(monRepertoire)) :
+        if os.isfile(os.join(monRepertoire, f)) and (f[-11:-5] == SEASON or f[-9:-5] == SEASON):
             pathData = "RawData/"+str(YEAR)+"/"+f
             liste_dataframe.append(pd.read_excel(pathData))
     df = pd.concat(liste_dataframe)

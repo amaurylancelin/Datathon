@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.metrics import hamming_loss
 import time 
+from tqdm import trange
 
 def score_fn(preds, trues):
     """
@@ -162,7 +163,7 @@ def get_cluster(df_query, rule="draw"):
 
     if rule == "max":
         # We return the cluster with the highest number of values
-        return clusters_values.index[0]
+        return np.random.choice(clusters_values.index[clusters_values.values.argmax()], 1)
 
     elif rule == "draw":
         return np.random.choice(clusters_values.index, 1, p=clusters_values.values)
@@ -171,4 +172,19 @@ def get_cluster(df_query, rule="draw"):
         assert False, "Unknown rule"
 
 
+def fill_submission(df_submission_translated, df_submission, dfs_preds,  states_not_included, rule="max"):
+        """
+        Fill the submission with the predictions of the model
+        """
+        Clusters = [-1]*len(df_submission)
+        for i in trange(len(df_submission_translated)):
+            key = df_submission_translated.iloc[i]["key"]
+            state = key.split("_")[0]
+            # For these states, we don't have the predictions because 2019 data is not available
+            if not state in states_not_included:
+                Clusters[i] = get_cluster(get_closest_keys_location(key, dfs_preds), rule=rule)[0]
 
+
+        df_submission["Cluster"] = Clusters
+
+        return df_submission
