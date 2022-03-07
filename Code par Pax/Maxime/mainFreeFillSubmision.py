@@ -4,7 +4,6 @@ import os
 import sys
 import argparse
 from pathlib import Path
-from tqdm import trange, tqdm
 import datetime as dt
 
 date_today = dt.datetime.now().strftime("%Y-%m-%d")

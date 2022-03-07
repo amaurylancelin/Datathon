@@ -127,8 +127,6 @@ def filler(df, stats, col):
 
     return df
 
-
-
 def precleaning_area_sown(df):
     """
     This function cleans the column Area Sown (Ha) and put NaN if the value is not numeric.
@@ -150,7 +148,6 @@ def precleaning_area_sown(df):
     df["Area Sown (Ha)"] = newValues
     return df
     
-
 def precleaning_yield(df):
     
     """
@@ -172,10 +169,9 @@ def precleaning_yield(df):
             except ValueError:
                 newValues.append(np.NaN)
         df[f"{year} Yield"] = newValues
-
-        
-        
+      
     return df
+
 
 def fill_NaN(df, stats):
 

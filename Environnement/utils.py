@@ -54,19 +54,19 @@ def add_Loss(df,year=2019):
     return new_df
 
 
-def add_Loss_brouillon(df,year=2019):
-    """return a new_df with a new collumn Loss for the data of 2019"""
-    Y=np.array([df[f'{y} Yield'] for y in np.arange(year-2-6,year-2+1)])
-    theta=np.array(df["Indemnity Level"])
-    Y=np.partition(Y,2,axis=0)
-    Y=Y[2:,:]
-    threshold=np.mean(Y, axis=0)*theta
-    S=np.array(df["Sum Insured (Inr)"])
+# def add_Loss_brouillon(df,year=2019):
+#     """return a new_df with a new collumn Loss for the data of 2019"""
+#     Y=np.array([df[f'{y} Yield'] for y in np.arange(year-2-6,year-2+1)])
+#     theta=np.array(df["Indemnity Level"])
+#     Y=np.partition(Y,2,axis=0)
+#     Y=Y[2:,:]
+#     threshold=np.mean(Y, axis=0)*theta
+#     S=np.array(df["Sum Insured (Inr)"])
 
-    L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
-    new_df=df
-    new_df["Loss"]=L
-    return new_df
+#     L=np.sum(S*np.maximum(0,threshold-Y),axis=0)/threshold
+#     new_df=df
+#     new_df["Loss"]=L
+#     return new_df
 
 # %% 
 # Pour le clustering des parcelles
@@ -137,29 +137,29 @@ def clean_data_state(df):
     return df
 
 # %%
-# BROUILLON 
+# # BROUILLON 
 
-def clean_data_brouillon(df):
-    #Suppresion des colonnes sans valeur non nulle
-    df = df.drop(columns = ["2000 Yield","2001 Yield","2002 Yield","2003 Yield","2004 Yield","2005 Yield","2018 Yield"])
-    #Suppression des colonnes inutiles
-    df = df.drop(columns = ["State","Sub-District","Block","GP"])
-    #On remplace les rendements nuls par leur moyenne
-    for year in range(2006,2017):
-        col = f"{year} Yield"
-        df[col] = df[col].fillna(df[col].mean())
-    return df
-# %%
-# new_df=add_Loss(clean_data(df),2015)
+# def clean_data_brouillon(df):
+#     #Suppresion des colonnes sans valeur non nulle
+#     df = df.drop(columns = ["2000 Yield","2001 Yield","2002 Yield","2003 Yield","2004 Yield","2005 Yield","2018 Yield"])
+#     #Suppression des colonnes inutiles
+#     df = df.drop(columns = ["State","Sub-District","Block","GP"])
+#     #On remplace les rendements nuls par leur moyenne
+#     for year in range(2006,2017):
+#         col = f"{year} Yield"
+#         df[col] = df[col].fillna(df[col].mean())
+#     return df
 # # %%
-# new_df.info()
-# # %%
-# new_df.columns
-# # %%
+# # new_df=add_Loss(clean_data(df),2015)
+# # # %%
+# # new_df.info()
+# # # %%
+# # new_df.columns
+# # # %%
 
 
-def processing_data(data) :
-    dataclean = add_Loss(clean_data(data),year=2019)
+# def processing_data(data) :
+#     dataclean = add_Loss(clean_data(data),year=2019)
 
 #%%
 def regroupe_crop(df):
@@ -183,7 +183,7 @@ def regroupe_crop(df):
     return df
 
 # %%
-def add_climate_clusters(df,rabi, lower = False):
+def add_climate_clusters(df, rabi, lower = False):
     """ Ajoute les clusters climatiques au dataframe df contenant une colonne State, rabi est un booléen indiquant la saison"""
     if rabi:
         saison = "rabi"
@@ -198,7 +198,7 @@ def add_climate_clusters(df,rabi, lower = False):
     new_df["climate_clusters"] = new_df["State"].map(dict)
     return new_df
 
-def add_crop_categories(df,rabi):
+def add_crop_categories(df, rabi):
     """ Ajoute les catégories de crop au dataframe df contenant une colonne Crop, rabi est un booléen indiquant la saison"""
     if rabi:
         saison = "Rabi"
