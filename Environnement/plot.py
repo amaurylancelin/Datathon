@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import LabelEncoder
 import matplotlib.pyplot as plt
 from pandas.plotting import parallel_coordinates
 import seaborn as sns
@@ -15,7 +14,6 @@ except ImportError:
 
 from Environnement.utils import (
     add_climate_clusters, 
-    regroupe_crop, 
     add_crop_categories,
     add_Loss,
     clean_data
@@ -23,6 +21,9 @@ from Environnement.utils import (
     
 
 #admin_level stands for administrative level : states, districts,...
+
+# returns a list containing for each State or District (according to admin_level) :
+# a list of [State or District, cluster]
 def get_list_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level):
     list_admin_level_cluster = []
     for i in range(len(list_admin_level)):
@@ -34,9 +35,10 @@ def get_list_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin
         list_admin_level_cluster.append(l)
     return list_admin_level_cluster
 
-# plot clusters on map of India
-# typiquement admin_level = 'District', method_labels = kmeans.labels_ par exemple
-# pathData renvoie vers les données brutes initiales
+
+# plot clusters on map of India. For each admin_level, we plot the main cluster.
+# method_labels corresponds to the clustering labels
+# pathData corresponds to the rawdata which are useful for the plot
 def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
     if import_error:
         raise ImportError("geopandas is not installed")
@@ -48,9 +50,11 @@ def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
 
     list_admin_level = pd.unique(df_admin_level_cluster[admin_level])
 
+    # get the main cluster on each admin_level
     list_admin_level_cluster = get_list_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level)
     df_reduced = pd.DataFrame(list_admin_level_cluster, columns=[admin_level, 'Clusters'])
 
+    #get the proper map according to the admin_level
     if admin_level == 'State' :
         map_path = "../../maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_1'
@@ -64,6 +68,7 @@ def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
     map_gdf = gpd.read_file(map_path)
     merged = map_gdf.set_index(name).join(df_reduced.set_index(admin_level))
 
+    #display the plot
     fig, ax = plt.subplots(1, figsize=(12, 12))
     ax.axis('off')
     ax.set_title('Clustering with k-means, averaged on each '+ admin_level,
@@ -71,13 +76,13 @@ def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
     fig = merged.plot(column='Clusters', cmap=cmap, linewidth=0.5, ax=ax, edgecolor='0.2', categorical=True, legend=True)
 # %%
 
-
+# Same as above but with the crops : 
+# list containing lists of : [admin_level, number corresponding to the main crop in the admin_level]
 def get_list_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level):
     list_admin_level_crop = []
     for i in range(len(list_admin_level)):
         l = []
         l.append(list_admin_level[i])
-        #print(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["Crop"].to_numpy())
         if len(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["numCrop"].to_numpy().astype(int)) > 0 :
             max_crop_num = np.bincount(df_admin_level_crop[df_admin_level_crop[admin_level] == list_admin_level[i]]["numCrop"].to_numpy().astype(int)).argmax()
             max_crop = df_admin_level_crop.loc[df_admin_level_crop['numCrop'] == max_crop_num, "crop_categories"].iloc[0]
@@ -85,15 +90,15 @@ def get_list_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop,
         list_admin_level_crop.append(l)
     return list_admin_level_crop
 
+# rabi is a boolean refering to the season (True if the season is rabi)
 def plot_crops(pathData,admin_level, rabi): 
-    """rabi est un booléen indiquant la saison"""  
 
     if import_error:
         raise ImportError("geopandas is not installed")
 
     df_init = pd.read_csv(pathData)
-    #df_admin_level_crop = regroupe_crop(df_init[[admin_level, 'Crop']])
 
+    #regroup the crops in categories
     df_admin_level_crop = add_crop_categories(df_init, rabi)
 
     df_admin_level_crop['numCrop'] = pd.factorize(df_admin_level_crop["crop_categories"])[0]
@@ -101,10 +106,11 @@ def plot_crops(pathData,admin_level, rabi):
     list_admin_level = pd.unique(df_admin_level_crop[admin_level])
     list_crops = pd.unique(df_admin_level_crop["crop_categories"])
 
+    #get the main crop in each admin_level
     list_admin_level_crop = get_list_admin_level_crop(list_admin_level, list_crops, df_admin_level_crop, admin_level)
     df_reduced = pd.DataFrame(list_admin_level_crop, columns=[admin_level, "crop_categories"])
 
-
+    #get the proper map according to the admin_level
     if admin_level == 'State' :
         map_path = "../../maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
@@ -118,6 +124,7 @@ def plot_crops(pathData,admin_level, rabi):
     map_gdf = gpd.read_file(map_path)
     merged = map_gdf.set_index(name).join(df_reduced.set_index(admin_level))
 
+    #display the plot
     fig, ax = plt.subplots(1, figsize=(12, 16))
     ax.axis('off')
     ax.set_title('Main crop in each '+ admin_level,
@@ -126,14 +133,14 @@ def plot_crops(pathData,admin_level, rabi):
 
 #%%
 
-# il faut modifier un peu clean data pour que ce plot fonctionne
+# Get the yield in each admin_level with bins
+# K is the number of categories in which we classifie the yields
 def get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K):
     list_admin_level_yield = []
     yields = []
     for i in range(len(list_admin_level)):
         l = []
         l.append(list_admin_level[i])
-        #print(df_admin_level_yield[df_admin_level_yield[admin_level] == list_admin_level[i]]["2017 Yield"].to_numpy())
         if len(df_admin_level_yield[df_admin_level_yield[admin_level] == list_admin_level[i]]["2017 Yield"].to_numpy().astype(int)) > 0 :
             mean_yield = np.mean(df_admin_level_yield[df_admin_level_yield[admin_level] == list_admin_level[i]]["2017 Yield"].to_numpy().astype(float))
             yields.append(mean_yield)
@@ -152,6 +159,8 @@ def get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_lev
         list_admin_level_yield[i][1] = value
     return list_admin_level_yield
 
+
+#plot the yield in each admin_level
 def plot_yields(pathData,admin_level,K):
 
     if import_error:
@@ -161,16 +170,13 @@ def plot_yields(pathData,admin_level,K):
     df_clean = add_Loss(clean_data(df_init))
     df_admin_level_yield = df_clean[[admin_level,'2017 Yield']]
 
-    #m = df_admin_level_yield['2017 Yield'].min()
-    #M = df_admin_level_yield['2017 Yield'].max()
-
-    # print(df_admin_level_yield)
     list_admin_level = pd.unique(df_admin_level_yield[admin_level])
 
+    #get the yield for each admin_level
     list_admin_level_yield = get_list_admin_level_yield(list_admin_level, df_admin_level_yield, admin_level, K)
     df_reduced = pd.DataFrame(list_admin_level_yield, columns=[admin_level, 'Yield'])
-    print(df_reduced)
 
+    #get the proper map according to the admin_level
     if admin_level == 'State' :
         map_path = "../../maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
@@ -180,10 +186,11 @@ def plot_yields(pathData,admin_level,K):
     else :
         map_path = "../../maps/ind_adm_shp/IND_adm3.shp"
         name = 'NAME_3'
-
+ 
     map_gdf = gpd.read_file(map_path)
     merged = map_gdf.set_index(name).join(df_reduced.set_index(admin_level))
 
+    #display the plot
     fig, ax = plt.subplots(1, figsize=(12, 12))
     ax.axis('off')
     ax.set_title('Average yield in each '+ admin_level,
