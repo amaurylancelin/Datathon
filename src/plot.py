@@ -23,10 +23,6 @@ from src.utils import (
     add_Loss,
 )
 
-# from pathlib import Path
-# import sys
-# os.chdir(Path(sys.path[0]).parent)
-
 # admin_level stands for administrative level : states, districts,...
 
 def get_list_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level): 
