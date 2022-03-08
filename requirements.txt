@@ -1,0 +1,15 @@
+pandas
+numpy
+geopandas
+sklearn
+kmodes
+seaborn
+tqdm
+matplotlib
+shap
+scipy
+umap
+prince
+lightgbm
+ipykernel
+ipywidgets
