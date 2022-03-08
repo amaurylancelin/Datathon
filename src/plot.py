@@ -15,7 +15,7 @@ except ImportError:
 
 from src.clean import (
     clean_data,
-    regroupe_crop
+    regroup_crop
     )
 from src.utils import (
     add_climate_clusters,  
