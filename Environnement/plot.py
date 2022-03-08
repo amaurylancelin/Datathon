@@ -25,6 +25,15 @@ from Environnement.utils import (
 # returns a list containing for each State or District (according to admin_level) :
 # a list of [State or District, cluster]
 def get_list_admin_level_cluster(list_admin_level, df_admin_level_cluster, admin_level):
+    '''
+    ## Description
+    Returns a list containing for each State or District (according to admin_level) :
+    
+    ## Parameters 
+    - list_admin_level : list of the states or districts
+    - df_admin_level_cluster : dataframe containing the clusters for each state or district
+    - admin_level : 'State' or 'District'
+    '''
     list_admin_level_cluster = []
     for i in range(len(list_admin_level)):
         l = []
