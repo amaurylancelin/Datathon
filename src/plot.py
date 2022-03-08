@@ -23,6 +23,9 @@ from src.utils import (
     add_Loss,
 )
 
+# from pathlib import Path
+# import sys
+# os.chdir(Path(sys.path[0]).parent)
 
 # admin_level stands for administrative level : states, districts,...
 
@@ -76,13 +79,13 @@ def plot_on_map(method_labels,pathData,admin_level, cmap = "RdYlGn"):
 
     # get the proper map according to the admin_level
     if admin_level == 'State' :
-        map_path = "../data/external_data/maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "data/external_data/maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_1'
     elif admin_level == 'District' :
-        map_path = "../data/external_data/maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "data/external_data/maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_2'
     else :
-        map_path = "../data/external_data/maps/ind_adm_shp/IND_adm3.shp"
+        map_path = "data/external_data/maps/ind_adm_shp/IND_adm3.shp"
         name = 'NAME_3'
 
     map_gdf = gpd.read_file(map_path)
@@ -151,13 +154,13 @@ def plot_crops(pathData,admin_level, rabi):
 
     # get the proper map according to the admin_level
     if admin_level == 'State' :
-        map_path = "../data/external_data/maps/gadm36_IND_shp/gadm36_IND_1.shp"
+        map_path = "data/external_data/maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
     elif admin_level == 'District' :
-        map_path = "../data/external_data/maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "data/external_data/maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_2'
     else :
-        map_path = "../data/external_data/maps/ind_adm_shp/IND_adm3.shp"
+        map_path = "data/external_data/maps/ind_adm_shp/IND_adm3.shp"
         name = 'NAME_3'
 
     map_gdf = gpd.read_file(map_path)
@@ -234,13 +237,13 @@ def plot_yields(pathData,admin_level,bins):
 
     # get the proper map according to the admin_level
     if admin_level == 'State' :
-        map_path = "../data/external_data/maps/gadm36_IND_shp/gadm36_IND_1.shp"
+        map_path = "data/external_data/maps/gadm36_IND_shp/gadm36_IND_1.shp"
         name = 'NAME_1'
     elif admin_level == 'District' :
-        map_path = "../data/external_data/maps/ind_adm_shp/IND_adm2.shp"
+        map_path = "data/external_data/maps/ind_adm_shp/IND_adm2.shp"
         name = 'NAME_2'
     else :
-        map_path = "../data/external_data/maps/ind_adm_shp/IND_adm3.shp"
+        map_path = "data/external_data/maps/ind_adm_shp/IND_adm3.shp"
         name = 'NAME_3'
  
     map_gdf = gpd.read_file(map_path)
