@@ -10,7 +10,7 @@ Below is an example of clustering using our modified version of k-prototypes wit
  <br />
 
 <p align="center">
-  <img src="output/plot/plot_all.png" alt="Rabi Clustering" background-color="red" title="Rabi Clustering" width="900" height="431">
+  <img src="output/plots/plot_all.png" alt="Rabi Clustering" background-color="red" title="Rabi Clustering" width="900" height="431">
 </p>
  <br />
 
