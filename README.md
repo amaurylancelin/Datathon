@@ -1,4 +1,4 @@
-# **SCOR's Datathon**
+# **2022 SCOR's Datathon**
 
 In this README you can find our project of the 2022 [SCOR](https://www.scor.com/fr)'s Datathon.
 
