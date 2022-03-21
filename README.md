@@ -1,6 +1,6 @@
 # **SCOR's Datathon**
 
-In this README you can find our project of the [SCOR](https://www.scor.com/fr) Datathon.
+In this README you can find our project of the 2022 [SCOR](https://www.scor.com/fr)'s Datathon.
 
 Our approach was initially to cluster our data solely on the basis of productive losses using k-means. Observing that the clusters lacked interpretability, we had to develop a new methodology. We then adapted the k-prototypes algorithm by defining our own loss function on the categorical data. At the same time, we added to our data 2 categorical variables (the type of climate and the category of crop) using external datasets from [Copernicus program](https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land-monthly-means?tab=form).
 The result is a more robust model that solves the "performance vs interpretability" trade-off by fixing the cursor on demand.
